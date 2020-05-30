@@ -5,7 +5,13 @@ var id
 var color: Color setget set_color
 var selected_building
 const speed = 200
-var inventary = {}
+var inventary = {
+	'mushroom': 0,
+	'wood': 0,
+	'stone': 0,
+	'food': 0
+}
+
 var good_team = true
 
 func _ready():
