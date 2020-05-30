@@ -20,7 +20,9 @@ void fragment() {
 			
 			vec2 blurOffset = vec2(float(x), float(y)) / float(sampleRadius) * blurRadius;
 			vec2 combinedShadowOffset = (offset + blurOffset) * ps;
-			float alpha = texture(TEXTURE, UV - combinedShadowOffset).a;
+			vec4 col = texture(TEXTURE, UV - combinedShadowOffset);
+
+			float unpackedHeight = float(int(col.b * 255.0) % 4) / 3.0;
 			
 			// use circle shape as mask
 			if (length(vec2(float(x), float(y))) > float(sampleRadius)) {
@@ -28,7 +30,15 @@ void fragment() {
 			}
 			
 			shadowSampleCount++;
-			shadowSum += alpha * shadowAlpha;
+			
+			/*if (unpackedHeight < 2) {
+				continue;
+			}*/
+			if (unpackedHeight < 2.0) {
+				shadowSampleCount++;
+			}
+			
+			shadowSum += col.a * shadowAlpha * unpackedHeight;
 		}
 	}
 	
@@ -39,5 +49,13 @@ void fragment() {
 	
 	vec4 col = texture(TEXTURE, UV);
 	
+	int packedData = int(col.b * 255.0);
+	int height = (packedData % 4);
+	int blue = packedData / 4;
+	col.b = float(blue) / 63.0;
+	
 	COLOR = mix(shadow, col, col.a);
+	
+	//COLOR = vec4(vec3(float(height) / 3.0), 1.0);
+	//COLOR = col;
 }
