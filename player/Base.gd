@@ -1,12 +1,7 @@
 extends Area2D
 
 export (bool) var good_team
-var inventary = {
-	"wood": 0,
-	"food": 0,
-	"stone": 0,
-	"mushroom": 0
-}
+var inventary = Global.EMPTY_INVENTORY.duplicate()
 
 func _ready():
 	var padding = Vector2(300, 300)
@@ -20,5 +15,5 @@ func _on_Base_body_entered(body):
 		body.clear_inventory()
 		
 func unload_inventary(player_inventary):
-	for item in ["wood", "stone", "food", "mushroom"]:
+	for item in Global.RESOURCES:
 		inventary[item] += player_inventary[item]

@@ -4,16 +4,10 @@ class_name Player
 signal health_changed(percentage)
 
 var id
-var color: Color setget set_color
 var selected_building
 const speed = 200
 var good_team setget set_team
-var inventary = {
-	'mushroom': 0,
-	'wood': 0,
-	'stone': 0,
-	'food': 0
-}
+var inventary = Global.EMPTY_INVENTORY.duplicate()
 
 remotesync var dead = false
 
@@ -26,10 +20,10 @@ func _ready():
 	set_process(true)
 	randomize()
 
-	# pick our color, even though this will be called on all clients, everyone
+	# pick our team, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
-	set_color(Color.from_hsv(randf(), 1, 1))
 	set_team(randf() >= 0.5)
+	set_color()
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
 	#position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
@@ -94,13 +88,14 @@ const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
 	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
 
-func set_color(_color: Color):
-	color = _color
-	$sprite.modulate = color
+func set_color():
+	var color = Color.indianred if good_team else Color.royalblue
+	$sprite.material.set_shader_param("outline_color", color)
 
 func set_team(team):
 	good_team = team
-	$sprite.texture = load("res://player/sloth.png") if good_team else load("res://player/koala.png")
+	var animal =  Global.ANIMALS["default"][good_team]
+	$sprite.texture = load("res://player/" + animal + ".png")
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
@@ -165,12 +160,8 @@ func update_inventary():
 		$"../../../Inventary".update_inventary(inventary)
 
 func clear_inventory():
-	inventary = {
-		'mushroom': 0,
-		'wood': 0,
-		'stone': 0,
-		'food': 0
-	}
+	inventary = Global.EMPTY_INVENTORY.duplicate()
+	update_inventary()
 
 func decrease_inventary(material, costs):
 	inventary[material] = inventary[material] - costs

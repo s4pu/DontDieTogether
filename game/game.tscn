@@ -13,9 +13,10 @@
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 6 )
 shader_param/offset = Vector2( 8, -8 )
-shader_param/modulate = Color( 0, 0, 0, 0.721569 )
-shader_param/blurRadius = 3.358
+shader_param/modulate = Color( 0, 0, 0, 1 )
+shader_param/blurRadius = 7.75
 shader_param/sampleRadius = 3
+shader_param/shadowAlpha = 0.588
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 19.4735, 20.0481 )
