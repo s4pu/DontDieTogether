@@ -2,11 +2,9 @@ extends StaticBody2D
 signal select_building
 signal deselect_building
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 var good_team
 var hp = 50
+var damage_on_contact = 0
 var costs = 0
 var needed_material = ""
 

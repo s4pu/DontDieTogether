@@ -45,27 +45,30 @@ func _process(dt):
 	if is_network_master() and not dead:
 		var did_move = false
 		var old_position = position
+		var collision
 		
 		if Input.is_action_pressed("ui_up"):
 # warning-ignore:return_value_discarded
-			move_and_collide(Vector2(0, -speed * dt))
+			collision = move_and_collide(Vector2(0, -speed * dt))
 			did_move = true
 		if Input.is_action_pressed("ui_down"):
 # warning-ignore:return_value_discarded
-			move_and_collide(Vector2(0, speed * dt))
+			collision = move_and_collide(Vector2(0, speed * dt))
 			did_move = true
 		if Input.is_action_pressed("ui_left"):
 # warning-ignore:return_value_discarded
-			move_and_collide(Vector2(-speed * dt, 0))
+			collision = move_and_collide(Vector2(-speed * dt, 0))
 			did_move = true
 		if Input.is_action_pressed("ui_right"):
 # warning-ignore:return_value_discarded
-			move_and_collide(Vector2(speed * dt, 0))
+			collision = move_and_collide(Vector2(speed * dt, 0))
 			did_move = true
 		if Input.is_action_just_pressed("ui_buildWall"):
 			rpc("spawn_wall", position)
 		if Input.is_action_just_pressed("ui_buildFence"):
 			rpc("spawn_fence", position)
+		if Input.is_action_just_pressed("ui_buildSpikes"):
+			rpc("spawn_spikes", position)
 		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
 			last_shot_time = OS.get_ticks_msec()
 			var direction = -(position - get_global_mouse_position()).normalized()
@@ -79,6 +82,8 @@ func _process(dt):
 		
 		if did_move:
 			rset("position", position)
+			if collision and collision.get_collider().is_in_group("buildings"):
+				take_damage(collision.get_collider().damage_on_contact)
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
@@ -143,9 +148,13 @@ func spawn_building(building, position):
 remotesync func spawn_wall(position):
 	var building = preload("res://buildings/wall.tscn").instance()
 	spawn_building(building, position)
-		
+
 remotesync func spawn_fence(position):
 	var building = preload("res://buildings/fence.tscn").instance()
+	spawn_building(building, position)
+
+remotesync func spawn_spikes(position):
+	var building = preload("res://buildings/spikes.tscn").instance()
 	spawn_building(building, position)
 
 remotesync func take_damage(points):
