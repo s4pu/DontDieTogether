@@ -1,7 +1,7 @@
 extends Node2D
 
 var port = 8899
-var ip = 'g.tmbe.me'
+var ip = 'localhost'
 var max_players = 200
 
 func _ready():
