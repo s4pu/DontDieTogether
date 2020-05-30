@@ -42,7 +42,7 @@ func server_player_connected(player_id: int):
 		for old_player in get_tree().get_nodes_in_group("players"):
 			rpc_id(player_id, "register_player", old_player.id, old_player.position, old_player.get_sync_state())
 		for node in get_tree().get_nodes_in_group("synced"):
-			rpc_id(player_id, "spawn_object", node.name, node.filename, node.position, node.get_node("sync").get_sync_state())
+			rpc_id(player_id, "spawn_object", node.name, node.filename, node.get_path(), node.position, node.get_node("sync").get_sync_state())
 		
 		# inform all our players about the new player
 		var new_player = register_player(player_id, null, {})
@@ -52,12 +52,15 @@ func server_player_disconnected(player_id: int):
 	print("Disconnected ", player_id)
 	rpc("unregister_player", player_id)
 
-remote func spawn_object(name: String, filename: String, position: Vector2, state: Dictionary):
+remote func spawn_object(name: String, filename: String, path: NodePath, position: Vector2, state: Dictionary):
 	# either create the object or just find the existing one
-	var object: Node2D = get_node_or_null(name)
+	var object: Node2D = get_node_or_null(path)
 	if not object:
+		var fullPath = Array(str(path).split('/'))
+		fullPath.pop_back()
 		object = load(filename).instance()
 		object.name = name
+		get_node(PoolStringArray(fullPath).join('/')).add_child(object)
 		$shadow_casters_container/viewport.add_child(object)
 	
 	# rigid bodys need to be our syncable_rigid_body because you can't set the
