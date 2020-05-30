@@ -13,7 +13,6 @@ var inventary = {
 	'food': 0
 }
 
-var good_team = true
 var last_shot_time = 0
 
 func _ready():
