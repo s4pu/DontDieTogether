@@ -6,6 +6,7 @@ var color: Color setget set_color
 var selected_building
 const speed = 200
 var inventary = {}
+var good_team = true
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTESYNC)
@@ -43,10 +44,15 @@ func _process(dt):
 		if Input.is_mouse_button_pressed(BUTTON_LEFT):
 			var direction = -(position - get_viewport().get_mouse_position()).normalized()
 			rpc("spawn_projectile", position, direction, Uuid.v4())
-		if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
-			selected_building.destroy()
-			selected_building = null
+		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building): 
+		#&& (selected_building.good_team == good_team)):
+			if (selected_building.good_team == good_team):
+				selected_building.destroy()
+				selected_building = null
+		if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
+			good_team = not good_team
 		rset("position", position)
+
 
 func set_color(_color: Color):
 	color = _color
@@ -59,11 +65,13 @@ remotesync func spawn_projectile(position, direction, name):
 	projectile.position = position
 	projectile.direction = direction
 	projectile.owned_by = self
+	projectile.good_team = good_team
 	get_parent().add_child(projectile)
 	return projectile
 
 remotesync func spawn_building(position):
 	var building = preload("res://buildings/building.tscn").instance()
+	building.good_team = good_team
 	building.position = position
 	get_parent().add_child(building)
 	building.connect("select_building", self, "select_building")
