@@ -4,7 +4,6 @@ class_name Player
 signal health_changed(percentage)
 
 var id
-var color: Color setget set_color
 var selected_building
 const speed = 200
 var good_team setget set_team
@@ -26,9 +25,8 @@ func _ready():
 	set_process(true)
 	randomize()
 
-	# pick our color, even though this will be called on all clients, everyone
+	# pick our tean, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
-	set_color(Color.from_hsv(randf(), 1, 1))
 	set_team(randf() >= 0.5)
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
@@ -91,10 +89,6 @@ func _process(dt):
 const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
 	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
-
-func set_color(_color: Color):
-	color = _color
-	$sprite.modulate = color
 
 func set_team(team):
 	good_team = team
