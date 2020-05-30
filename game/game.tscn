@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://game/game.gd" type="Script" id=1]
 [ext_resource path="res://sync/sync.tscn" type="PackedScene" id=2]
@@ -7,12 +7,13 @@
 [ext_resource path="res://collectables/Level.tscn" type="PackedScene" id=5]
 [ext_resource path="res://shaders/softshadow.shader" type="Shader" id=6]
 [ext_resource path="res://buildings/buildingSelection.tscn" type="PackedScene" id=7]
+[ext_resource path="res://shaders/shadow_casters_container.gd" type="Script" id=8]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 6 )
 shader_param/offset = Vector2( 8, -8 )
-shader_param/modulate = null
-shader_param/blurRadius = 3.0
+shader_param/modulate = Color( 0, 0, 0, 0.721569 )
+shader_param/blurRadius = 3.358
 shader_param/sampleRadius = 3
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -29,19 +30,21 @@ transform = Transform2D( 1, 0, 0, 1, 1100, 50 )
 
 [node name="shadow_casters_container" type="ViewportContainer" parent="."]
 material = SubResource( 1 )
-margin_left = 0.340561
-margin_right = 1223.34
-margin_bottom = 1089.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+mouse_filter = 2
 stretch = true
+script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="viewport" type="Viewport" parent="shadow_casters_container"]
-size = Vector2( 1223, 1089 )
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
+physics_object_picking = true
 
 [node name="Level" parent="shadow_casters_container/viewport" instance=ExtResource( 5 )]
 

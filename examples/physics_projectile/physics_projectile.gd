@@ -40,7 +40,7 @@ func _integrate_forces(state: Physics2DDirectBodyState):
 			var body = state.get_contact_collider_object(i)
 			if body and body != owned_by:				
 				if body.is_in_group("players"):
-					body.rpc("kill")
+					body.rpc("take_damage", 80)
 				if body.is_in_group("buildings"):
 					if body.good_team != good_team:
 						body.take_damage(damage)

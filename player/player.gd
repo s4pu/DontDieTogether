@@ -1,28 +1,44 @@
 extends KinematicBody2D
 class_name Player
 
+signal health_changed(percentage)
+
 var id
 var color: Color setget set_color
 var selected_building
 const speed = 200
-var inventary = {}
-var good_team = true
+var good_team setget set_team
+var inventary = {
+	'mushroom': 0,
+	'wood': 0,
+	'stone': 0,
+	'food': 0
+}
+
+remotesync var dead = false
+
+var last_shot_time = 0
+const MAX_HITPOINTS = 1000
+var hitpoints = MAX_HITPOINTS
 
 func _ready():
-	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTESYNC)
+	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
 	set_process(true)
 	randomize()
 	position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
-		
+	
 	# pick our color, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_color(Color.from_hsv(randf(), 1, 1))
+	set_team(randf() >= 0.5)
 	$Camera2D.current = is_network_master()
 	
+	$particles_steps.rset_config("emitting", MultiplayerAPI.RPC_MODE_REMOTESYNC)
+	$particles_steps.rset_config("rotation", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 
 func get_sync_state():
 	# place all synced properties in here
-	var properties = ['color']
+	var properties = ['color', 'good_team']
 	
 	var state = {}
 	for p in properties:
@@ -30,25 +46,33 @@ func get_sync_state():
 	return state
 
 func _process(dt):
-	if is_network_master():
+	if is_network_master() and not dead:
+		var did_move = false
+		var old_position = position
+		
 		if Input.is_action_pressed("ui_up"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(0, -speed * dt))
+			did_move = true
 		if Input.is_action_pressed("ui_down"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(0, speed * dt))
+			did_move = true
 		if Input.is_action_pressed("ui_left"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(-speed * dt, 0))
+			did_move = true
 		if Input.is_action_pressed("ui_right"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(speed * dt, 0))
+			did_move = true
 		if Input.is_action_just_pressed("ui_buildWall"):
 			rpc("spawn_wall", position)
 		if Input.is_action_just_pressed("ui_buildFence"):
 			rpc("spawn_fence", position)
-		if Input.is_mouse_button_pressed(BUTTON_LEFT):
-			var direction = -(position - get_viewport().get_mouse_position()).normalized()
+		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
+			last_shot_time = OS.get_ticks_msec()
+			var direction = -(position - get_global_mouse_position()).normalized()
 			rpc("spawn_projectile", position, direction, Uuid.v4())
 		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building): 
 		#&& (selected_building.good_team == good_team)):
@@ -57,12 +81,23 @@ func _process(dt):
 				selected_building = null
 		if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
 			good_team = not good_team
-		rset("position", position)
+		
+		if did_move:
+			rset("position", position)
+			$particles_steps.rset('rotation', old_position.angle_to_point(position))
+		$particles_steps.rset('emitting', did_move)
 
+const WEAPON_COOLDOWN = 400 # milliseconds
+func can_shoot():
+	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
 
 func set_color(_color: Color):
 	color = _color
 	$sprite.modulate = color
+
+func set_team(team):
+	good_team = team
+	$sprite.texture = load("res://player/sloth.png") if good_team else load("res://player/koala.png")
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
@@ -100,8 +135,14 @@ remotesync func spawn_fence(position):
 	var building = preload("res://buildings/fence.tscn").instance()
 	spawn_building(building, position)
 
-remotesync func kill():
-	hide()
+
+remotesync func take_damage(points):
+	hitpoints -= points
+	emit_signal("health_changed", hitpoints / MAX_HITPOINTS)
+	
+	if hitpoints <= 0:
+		hide()
+		rset("dead", true)
 
 func select_building(building):
 	selected_building = building
