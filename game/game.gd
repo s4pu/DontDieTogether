@@ -1,6 +1,6 @@
 extends Node2D
 
-var port = 8877
+var port = 8899
 var ip = 'localhost'
 var max_players = 200
 
@@ -14,18 +14,20 @@ func _ready():
 		get_tree().connect("server_disconnected", self, "client_note_disconnected")
 	else:
 		print("Listening for connections on " + String(port) + " ...")
-		peer.create_server(port, max_players)
+		var err = peer.create_server(port, max_players)
+		if err != OK:
+			print('Network failed to initialize: ' + str(err))
+			get_tree().quit()
 		get_tree().connect("network_peer_connected", self, "server_player_connected")
 		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
 		
 		$Level.spawn()
 	
-		
 	get_tree().set_network_peer(peer)
 	
 	if not is_dedicated and not is_client:
 		register_player(1, null, {})
-				
+
 func client_note_disconnected():
 	print("Server disconnected from player, exiting ...")
 	get_tree().quit()
