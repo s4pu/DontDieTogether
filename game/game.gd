@@ -16,7 +16,10 @@ func _ready():
 		print("Listening for connections on " + String(port) + " ...")
 		peer.create_server(port, max_players)
 		get_tree().connect("network_peer_connected", self, "server_player_connected")
-		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")
+		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
+		
+		$Level.spawn()
+		
 		if not is_dedicated:
 			register_player(1, null, {})
 	
