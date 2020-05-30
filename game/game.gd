@@ -20,11 +20,11 @@ func _ready():
 		
 		$Level.spawn()
 		
-		if not is_dedicated:
-			register_player(1, null, {})
-	
 	get_tree().set_network_peer(peer)
-
+	
+	if not is_dedicated and not is_client:
+		register_player(1, null, {})
+				
 func client_note_disconnected():
 	print("Server disconnected from player, exiting ...")
 	get_tree().quit()
