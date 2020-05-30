@@ -298,9 +298,9 @@
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="624.977"
-     inkscape:cx="3834.2536"
-     inkscape:zoom="0.68242214"
+     inkscape:cy="706.90041"
+     inkscape:cx="4276.0596"
+     inkscape:zoom="5.8686317"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      borderopacity="1.0"
@@ -5135,6 +5135,9 @@
       </g>
     </g>
     <g
+       inkscape:export-ydpi="45.75"
+       inkscape:export-xdpi="45.75"
+       inkscape:export-filename="/home/tom/Code/godot/DontDieTogether/buildings/tower.png"
        id="g2791"
        transform="matrix(0.92933976,0,0,0.92933976,854.47451,120.8941)">
       <rect
@@ -5165,10 +5168,13 @@
          id="path2789" />
     </g>
     <circle
+       inkscape:export-ydpi="45.75"
+       inkscape:export-xdpi="45.75"
+       inkscape:export-filename="/home/tom/Code/godot/DontDieTogether/buildings/tower.png"
        r="12.667875"
        cy="189.77963"
        cx="1131.1239"
        id="path2793"
-       style="opacity:1;fill:#800000;fill-opacity:1;stroke:#333333;stroke-width:2.06500007;stroke-miterlimit:4;stroke-dasharray:6.19500023,2.06500007;stroke-opacity:1;stroke-dashoffset:0" />
+       style="opacity:1;fill:#800000;fill-opacity:1;stroke:#333333;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:6,2;stroke-opacity:1;stroke-dashoffset:0" />
   </g>
 </svg>
