@@ -21,9 +21,9 @@ void fragment() {
 	}
 	
 	float shadowValue = min(1.0, shadowSum / pow(1.0 + 2.0 * float(sampleRadius), 2));
-	vec4 shadow = vec4(modulate.rgb, shadowValue);
+	vec4 shadow = vec4(modulate.rgb, shadowValue * 0.3);
 	
 	vec4 col = texture(TEXTURE, UV);
-
+	
 	COLOR = mix(shadow, col, col.a);
 }
