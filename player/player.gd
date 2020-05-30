@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Player
 
+signal health_changed(percentage)
+
 var id
 var color: Color setget set_color
 var selected_building
@@ -13,23 +15,29 @@ var inventary = {
 	'food': 0
 }
 
+remotesync var dead = false
+
 var last_shot_time = 0
+const MAX_HITPOINTS = 1000
+var hitpoints = MAX_HITPOINTS
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
 	set_process(true)
 	randomize()
-		
+
 	# pick our color, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_color(Color.from_hsv(randf(), 1, 1))
 	set_team(randf() >= 0.5)
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
-	#Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
+	#position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
 	
 	$Camera2D.current = is_network_master()
 	
+	$particles_steps.rset_config("emitting", MultiplayerAPI.RPC_MODE_REMOTESYNC)
+	$particles_steps.rset_config("rotation", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 
 func get_sync_state():
 	# place all synced properties in here
@@ -41,7 +49,7 @@ func get_sync_state():
 	return state
 
 func _process(dt):
-	if is_network_master():
+	if is_network_master() and not dead:
 		var did_move = false
 		var old_position = position
 		
@@ -77,8 +85,8 @@ func _process(dt):
 		
 		if did_move:
 			rset("position", position)
-			$particles_steps.rotation = old_position.angle_to_point(position)
-		$particles_steps.emitting = did_move
+			$particles_steps.rset('rotation', old_position.angle_to_point(position))
+		$particles_steps.rset('emitting', did_move)
 
 const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
@@ -120,10 +128,14 @@ remotesync func spawn_building(position):
 	get_parent().add_child(building)
 	building.connect("select_building", self, "select_building")
 	building.connect("deselect_building", self, "deselect_building")
-	
 
-remotesync func kill():
-	hide()
+remotesync func take_damage(points):
+	hitpoints -= points
+	emit_signal("health_changed", hitpoints / MAX_HITPOINTS)
+	
+	if hitpoints <= 0:
+		hide()
+		rset("dead", true)
 
 func select_building(building):
 	selected_building = building
