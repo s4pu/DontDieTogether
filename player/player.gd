@@ -5,8 +5,14 @@ var id
 var color: Color setget set_color
 var selected_building
 const speed = 200
-var inventary = {}
 var good_team setget set_team
+var inventary = {
+	'mushroom': 0,
+	'wood': 0,
+	'stone': 0,
+	'food': 0
+}
+
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTESYNC)
