@@ -1,16 +1,143 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Inventary.gd" type="Script" id=1]
+[ext_resource path="res://collectables/icon_wood.png" type="Texture" id=2]
+
+[sub_resource type="StreamTexture" id=1]
+flags = 4
+load_path = "res://.import/icon_stone.png-1a1929b1ee8c73f77927bcdd755371b1.stex"
+
+[sub_resource type="StreamTexture" id=2]
+flags = 4
+load_path = "res://.import/icon_mushrooms.png-b55f18814c0c517ddacf70183ed58b96.stex"
+
+[sub_resource type="StreamTexture" id=3]
+flags = 4
+load_path = "res://.import/icon_food.png-c0476c9eab8d1dd0d577476f253af775.stex"
 
 [node name="Control" type="CanvasLayer"]
 script = ExtResource( 1 )
 
-[node name="Label" type="Label" parent="."]
-margin_left = 19.8239
-margin_top = 18.8732
-margin_right = 216.824
-margin_bottom = 86.8732
-text = "test!"
+[node name="Margin" type="MarginContainer" parent="."]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 150.0
+margin_bottom = 52.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Row" type="HBoxContainer" parent="Margin"]
+margin_right = 188.0
+margin_bottom = 32.0
+
+[node name="wood" type="HBoxContainer" parent="Margin/Row"]
+margin_right = 44.0
+margin_bottom = 32.0
+
+[node name="Background" type="MarginContainer" parent="Margin/Row/wood"]
+margin_right = 32.0
+margin_bottom = 32.0
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Row/wood/Background"]
+margin_right = 32.0
+margin_bottom = 32.0
+texture = ExtResource( 2 )
+stretch_mode = 4
+
+[node name="Count" type="MarginContainer" parent="Margin/Row/wood"]
+margin_left = 36.0
+margin_right = 44.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="Margin/Row/wood/Count"]
+margin_top = 9.0
+margin_right = 8.0
+margin_bottom = 23.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "0"
+align = 1
+
+[node name="stone" type="HBoxContainer" parent="Margin/Row"]
+margin_left = 48.0
+margin_right = 92.0
+margin_bottom = 32.0
+
+[node name="Background" type="MarginContainer" parent="Margin/Row/stone"]
+margin_right = 32.0
+margin_bottom = 32.0
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Row/stone/Background"]
+margin_right = 32.0
+margin_bottom = 32.0
+texture = SubResource( 1 )
+stretch_mode = 4
+
+[node name="Count" type="MarginContainer" parent="Margin/Row/stone"]
+margin_left = 36.0
+margin_right = 44.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="Margin/Row/stone/Count"]
+margin_top = 9.0
+margin_right = 8.0
+margin_bottom = 23.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "0"
+align = 1
+
+[node name="mushrooms" type="HBoxContainer" parent="Margin/Row"]
+margin_left = 96.0
+margin_right = 140.0
+margin_bottom = 32.0
+
+[node name="Background" type="MarginContainer" parent="Margin/Row/mushrooms"]
+margin_right = 32.0
+margin_bottom = 32.0
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Row/mushrooms/Background"]
+margin_right = 32.0
+margin_bottom = 32.0
+texture = SubResource( 2 )
+stretch_mode = 4
+
+[node name="Count" type="MarginContainer" parent="Margin/Row/mushrooms"]
+margin_left = 36.0
+margin_right = 44.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="Margin/Row/mushrooms/Count"]
+margin_top = 9.0
+margin_right = 8.0
+margin_bottom = 23.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "0"
+align = 1
+
+[node name="food" type="HBoxContainer" parent="Margin/Row"]
+margin_left = 144.0
+margin_right = 188.0
+margin_bottom = 32.0
+
+[node name="Background" type="MarginContainer" parent="Margin/Row/food"]
+margin_right = 32.0
+margin_bottom = 32.0
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Row/food/Background"]
+margin_right = 32.0
+margin_bottom = 32.0
+texture = SubResource( 3 )
+stretch_mode = 4
+
+[node name="Count" type="MarginContainer" parent="Margin/Row/food"]
+margin_left = 36.0
+margin_right = 44.0
+margin_bottom = 32.0
+
+[node name="Label" type="Label" parent="Margin/Row/food/Count"]
+margin_top = 9.0
+margin_right = 8.0
+margin_bottom = 23.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "0"
+align = 1

@@ -11,9 +11,8 @@ func _ready():
 	pass # Replace with function body.
 
 func update_inventary(inventary):
-	var display_text = ''
-	for key in inventary.keys():
-		display_text += key + ': ' + str(inventary[key]) + '  '
-	
-	$Label.text = display_text
+	$Margin/Row/wood/Count/Label.text = str(inventary['wood'])
+	$Margin/Row/stone/Count/Label.text = str(inventary['stone'])
+	$Margin/Row/mushrooms/Count/Label.text = str(inventary['mushroom'])
+	$Margin/Row/food/Count/Label.text = str(inventary['food'])
 
