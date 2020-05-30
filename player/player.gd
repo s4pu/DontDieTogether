@@ -32,12 +32,16 @@ func get_sync_state():
 func _process(dt):
 	if is_network_master():
 		if Input.is_action_pressed("ui_up"):
+# warning-ignore:return_value_discarded
 			move_and_collide(Vector2(0, -speed * dt))
 		if Input.is_action_pressed("ui_down"):
+# warning-ignore:return_value_discarded
 			move_and_collide(Vector2(0, speed * dt))
 		if Input.is_action_pressed("ui_left"):
+# warning-ignore:return_value_discarded
 			move_and_collide(Vector2(-speed * dt, 0))
 		if Input.is_action_pressed("ui_right"):
+# warning-ignore:return_value_discarded
 			move_and_collide(Vector2(speed * dt, 0))
 		if Input.is_action_just_pressed("ui_accept"):
 			rpc("spawn_building", position)
@@ -68,11 +72,21 @@ remotesync func spawn_projectile(position, direction, name):
 	projectile.good_team = good_team
 	get_parent().add_child(projectile)
 	return projectile
+	
+func get_position_on_tilemap(position):
+	# 1, 1 --> 32, 32
+	# 33, 33 --> 32, 32
+	# 65, 65 --> 96, 96
+	var x = position[0]
+	var y = position[1]
+	var x_result = round((x-32)/64)*64 + 32
+	var y_result = round((y-32)/64)*64 + 32
+	return Vector2(x_result, y_result)
 
 remotesync func spawn_building(position):
 	var building = preload("res://buildings/building.tscn").instance()
 	building.good_team = good_team
-	building.position = position
+	building.position = get_position_on_tilemap(position)
 	get_parent().add_child(building)
 	building.connect("select_building", self, "select_building")
 	building.connect("deselect_building", self, "deselect_building")
@@ -96,7 +110,7 @@ func collect(collectable):
 
 func update_inventary():
 	if is_network_master():
-		$"../Inventary".update_inventary(inventary)
+		$"../../../Inventary".update_inventary(inventary)
 	
 	
 	

@@ -11,17 +11,20 @@ func _ready():
 	
 	if is_client:
 		peer.create_client(ip, port)
-		get_tree().connect("server_disconnected", self, "client_note_disconnected")
+		if get_tree().connect("server_disconnected", self, "client_note_disconnected") != OK:
+			print("An eror occured while trying to connect the server disconnected signal")
 	else:
 		print("Listening for connections on " + String(port) + " ...")
 		var err = peer.create_server(port, max_players)
 		if err != OK:
 			print('Network failed to initialize: ' + str(err))
 			get_tree().quit()
-		get_tree().connect("network_peer_connected", self, "server_player_connected")
-		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
+		if get_tree().connect("network_peer_connected", self, "server_player_connected") != OK:
+			print("An error occured while trying to connect the network peer connected signal")
+		if get_tree().connect("network_peer_disconnected", self, "server_player_disconnected") != OK:
+			print("An error occured while trying to connec the network peer disconnected signal")
 		
-		$Level.spawn()
+		$shadow_casters_container/viewport/Level.spawn()
 	
 	get_tree().set_network_peer(peer)
 	
@@ -58,6 +61,7 @@ remote func spawn_object(name: String, filename: String, path: NodePath, positio
 		object = load(filename).instance()
 		object.name = name
 		get_node(PoolStringArray(fullPath).join('/')).add_child(object)
+		$shadow_casters_container/viewport.add_child(object)
 	
 	# rigid bodys need to be our syncable_rigid_body because you can't set the
 	# position or any other physics property outside of its own _integrate_forces
@@ -77,7 +81,7 @@ remote func register_player(player_id: int, position, state: Dictionary):
 	player.name = String(player.id)
 	player.add_to_group("players")
 	
-	add_child(player)
+	$shadow_casters_container/viewport.add_child(player)
 	
 	if position:
 		player.position = position
