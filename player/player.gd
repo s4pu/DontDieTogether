@@ -96,7 +96,7 @@ func can_shoot():
 
 func set_color(_color: Color):
 	color = _color
-	$sprite.modulate = color
+	$sprite.material.set_shader_param("outline_color", color)
 
 func set_team(team):
 	good_team = team
