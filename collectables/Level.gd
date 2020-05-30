@@ -1,7 +1,5 @@
 extends Node2D
 
-const map_size = 6000
-
 const elements = {
 	'mushroom': ['mushrooms_corner.png'],
 	'wood': ['pine.png', 'tree.png'],
@@ -29,7 +27,7 @@ func spawn():
 	var num_elem = 500
 	
 	for i in num_elem:
-		var pos = Vector2(randi() % map_size, randi() % map_size)
+		var pos = Vector2(randi() % Global.MAP_SIZE, randi() % Global.MAP_SIZE)
 		pos = get_position_on_tilemap(pos)
 		spawn_collectable(elements.keys()[i % len(elements)], pos)
 		
