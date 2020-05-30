@@ -44,3 +44,4 @@ texture = ExtResource( 2 )
 shape = SubResource( 3 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2( 1.2, 1.2 )
