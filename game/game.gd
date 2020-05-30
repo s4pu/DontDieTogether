@@ -61,7 +61,7 @@ remote func spawn_object(name: String, filename: String, path: NodePath, positio
 		object = load(filename).instance()
 		object.name = name
 		get_node(PoolStringArray(fullPath).join('/')).add_child(object)
-		$shadow_casters_container/viewport.add_child(object)
+		#$shadow_casters_container/viewport.add_child(object)
 	
 	# rigid bodys need to be our syncable_rigid_body because you can't set the
 	# position or any other physics property outside of its own _integrate_forces

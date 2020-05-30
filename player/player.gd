@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Player
 
+signal health_changed(percentage)
+
 var id
 var color: Color setget set_color
 var selected_building
@@ -13,7 +15,11 @@ var inventary = {
 	'food': 0
 }
 
+remotesync var dead = false
+
 var last_shot_time = 0
+const MAX_HITPOINTS = 1000
+var hitpoints = MAX_HITPOINTS
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
@@ -40,7 +46,7 @@ func get_sync_state():
 	return state
 
 func _process(dt):
-	if is_network_master():
+	if is_network_master() and not dead:
 		var did_move = false
 		var old_position = position
 		
@@ -119,10 +125,14 @@ remotesync func spawn_building(position):
 	get_parent().add_child(building)
 	building.connect("select_building", self, "select_building")
 	building.connect("deselect_building", self, "deselect_building")
-	
 
-remotesync func kill():
-	hide()
+remotesync func take_damage(points):
+	hitpoints -= points
+	emit_signal("health_changed", hitpoints / MAX_HITPOINTS)
+	
+	if hitpoints <= 0:
+		hide()
+		rset("dead", true)
 
 func select_building(building):
 	selected_building = building
