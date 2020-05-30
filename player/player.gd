@@ -100,7 +100,7 @@ func collect(collectable):
 
 func update_inventary():
 	if is_network_master():
-		$"../Inventary".update_inventary(inventary)
+		$"../../../Inventary".update_inventary(inventary)
 	
 	
 	
