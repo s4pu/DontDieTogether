@@ -95,7 +95,7 @@ func collect(collectable):
 	update_inventary()
 
 func update_inventary():
-	$"../Inventary".update_inventary(inventary)
+	$"../../../Inventary".update_inventary(inventary)
 	
 	
 	

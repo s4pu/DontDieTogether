@@ -21,7 +21,7 @@ func _ready():
 		get_tree().connect("network_peer_connected", self, "server_player_connected")
 		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
 		
-		$Level.spawn()
+		$shadow_casters_container/viewport/Level.spawn()
 	
 	get_tree().set_network_peer(peer)
 	
@@ -55,7 +55,7 @@ remote func spawn_object(name: String, filename: String, position: Vector2, stat
 	if not object:
 		object = load(filename).instance()
 		object.name = name
-		add_child(object)
+		$shadow_casters_container/viewport.add_child(object)
 	
 	# rigid bodys need to be our syncable_rigid_body because you can't set the
 	# position or any other physics property outside of its own _integrate_forces
@@ -75,7 +75,7 @@ remote func register_player(player_id: int, position, state: Dictionary):
 	player.name = String(player.id)
 	player.add_to_group("players")
 	
-	add_child(player)
+	$shadow_casters_container/viewport.add_child(player)
 	
 	if position:
 		player.position = position
