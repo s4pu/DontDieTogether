@@ -15,7 +15,7 @@ var inventary = {
 
 
 func _ready():
-	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTESYNC)
+	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
 	set_process(true)
 	randomize()
 	position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
@@ -38,18 +38,25 @@ func get_sync_state():
 
 func _process(dt):
 	if is_network_master():
+		var did_move = false
+		var old_position = position
+		
 		if Input.is_action_pressed("ui_up"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(0, -speed * dt))
+			did_move = true
 		if Input.is_action_pressed("ui_down"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(0, speed * dt))
+			did_move = true
 		if Input.is_action_pressed("ui_left"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(-speed * dt, 0))
+			did_move = true
 		if Input.is_action_pressed("ui_right"):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(speed * dt, 0))
+			did_move = true
 		if Input.is_action_just_pressed("ui_accept"):
 			rpc("spawn_building", position)
 		if Input.is_mouse_button_pressed(BUTTON_LEFT):
@@ -62,7 +69,11 @@ func _process(dt):
 				selected_building = null
 		if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
 			good_team = not good_team
-		rset("position", position)
+		
+		if did_move:
+			rset("position", position)
+			$particles_steps.rotation = old_position.angle_to_point(position)
+		$particles_steps.emitting = did_move
 
 
 func set_color(_color: Color):
