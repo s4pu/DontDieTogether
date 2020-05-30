@@ -1,4 +1,4 @@
 extends ViewportContainer
 
-func _process(delta):
+func _process(_delta):
 	rect_size = OS.window_size

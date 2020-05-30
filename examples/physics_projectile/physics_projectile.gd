@@ -19,11 +19,6 @@ func _ready():
 	# accelerate in direction of shooting
 	rotation = direction.angle()
 	apply_central_impulse(direction * speed)
-	
-	# wait for a bit then kill the projectile
-	if is_network_master():
-		yield(get_tree().create_timer(2), "timeout")
-		rpc("kill")
 
 remotesync func kill():
 	queue_free()
@@ -59,3 +54,6 @@ remotesync func explode():
 	particles.get_node("Particles2D").emitting = true
 	get_parent().add_child(particles)
 	queue_free()
+
+func _on_Timer_timeout():
+	rpc("kill")
