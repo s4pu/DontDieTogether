@@ -19,7 +19,7 @@ extents = Vector2( 32.1409, 31.9598 )
 script = ExtResource( 2 )
 
 [node name="sync" parent="." instance=ExtResource( 3 )]
-synced_properties = PoolStringArray( "item_name" )
+synced_properties = PoolStringArray( "item_name", "texture" )
 
 [node name="Area2D" type="Area2D" parent="."]
 
