@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="ParticlesMaterial" id=1]
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 103.45
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 6.0
+scale_random = 1.0
+
+[node name="Hit_Particle" type="Node2D"]
+
+[node name="Particles2D" type="Particles2D" parent="."]
+position = Vector2( 0, -1 )
+emitting = false
+amount = 30
+lifetime = 0.2
+one_shot = true
+process_material = SubResource( 1 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+autostart = true
+[connection signal="timeout" from="Timer" to="." method="queue_free"]
