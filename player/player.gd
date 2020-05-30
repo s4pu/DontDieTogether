@@ -94,7 +94,8 @@ func set_color():
 
 func set_team(team):
 	good_team = team
-	$sprite.texture = load("res://player/sloth.png") if good_team else load("res://player/koala.png")
+	var animal =  Global.ANIMALS["default"][good_team]
+	$sprite.texture = load("res://player/" + animal + ".png")
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
