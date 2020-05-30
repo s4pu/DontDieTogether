@@ -84,3 +84,10 @@ func collect(collectable):
 		inventary[collectable.item_name] = 1
 	else:
 		inventary[collectable.item_name] += 1
+	update_inventary()
+
+func update_inventary():
+	$"../Inventary".update_inventary(inventary)
+	
+	
+	

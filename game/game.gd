@@ -19,6 +19,7 @@ func _ready():
 		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
 		
 		$Level.spawn()
+	
 		
 	get_tree().set_network_peer(peer)
 	
