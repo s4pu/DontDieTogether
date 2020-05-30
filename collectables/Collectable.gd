@@ -15,5 +15,8 @@ func _on_Area2D_body_entered(body):
 		body.collect(self)
 		rpc("die")
 
+func set_texture(path):
+	$Area2D/Sprite.texture = load("collectables/" + path)
+
 remotesync func die():
 	queue_free()
