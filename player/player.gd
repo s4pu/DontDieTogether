@@ -7,12 +7,7 @@ var id
 var selected_building
 const speed = 200
 var good_team setget set_team
-var inventary = {
-	'mushroom': 0,
-	'wood': 0,
-	'stone': 0,
-	'food': 0
-}
+var inventary = Global.EMPTY_INVENTORY.duplicate()
 
 remotesync var dead = false
 
@@ -149,10 +144,5 @@ func update_inventary():
 		$"../../../Inventary".update_inventary(inventary)
 	
 func clear_inventory():
-	inventary = {
-		'mushroom': 0,
-		'wood': 0,
-		'stone': 0,
-		'food': 0
-	}
+	inventary = Global.EMPTY_INVENTORY.duplicate()
 	update_inventary()
