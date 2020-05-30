@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://game/game.gd" type="Script" id=1]
 [ext_resource path="res://sync/sync.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://collectables/Level.tscn" type="PackedScene" id=5]
 [ext_resource path="res://shaders/softshadow.shader" type="Shader" id=6]
 [ext_resource path="res://shaders/shadow_casters_container.gd" type="Script" id=7]
+[ext_resource path="res://player/Base.tscn" type="PackedScene" id=8]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 6 )
@@ -39,6 +40,11 @@ handle_input_locally = false
 render_target_update_mode = 3
 
 [node name="Level" parent="shadow_casters_container/viewport" instance=ExtResource( 5 )]
+
+[node name="GoodBase" parent="shadow_casters_container/viewport" instance=ExtResource( 8 )]
+good_team = true
+
+[node name="EvilBase" parent="shadow_casters_container/viewport" instance=ExtResource( 8 )]
 
 [node name="RigidBody2D" type="RigidBody2D" parent="shadow_casters_container/viewport"]
 position = Vector2( 220.99, 136.671 )

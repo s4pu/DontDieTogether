@@ -19,12 +19,15 @@ func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
 	set_process(true)
 	randomize()
-	position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
 		
 	# pick our color, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_color(Color.from_hsv(randf(), 1, 1))
 	set_team(randf() >= 0.5)
+	
+	position = $"../GoodBase".position if good_team else $"../EvilBase".position
+	#Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
+	
 	$Camera2D.current = is_network_master()
 	
 
@@ -139,5 +142,11 @@ func update_inventary():
 	if is_network_master():
 		$"../../../Inventary".update_inventary(inventary)
 	
-	
-	
+func clear_inventory():
+	inventary = {
+		'mushroom': 0,
+		'wood': 0,
+		'stone': 0,
+		'food': 0
+	}
+	update_inventary()
