@@ -20,7 +20,7 @@ func _ready():
 	set_process(true)
 	randomize()
 
-	# pick our tean, even though this will be called on all clients, everyone
+	# pick our team, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_team(randf() >= 0.5)
 	
@@ -87,9 +87,10 @@ const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
 	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
 
-func set_color(_color: Color):
-	color = _color
-	$sprite.material.set_shader_param("outline_color", color)
+func set_color():
+	pass
+	#var color =  if good_team else
+	#$sprite.material.set_shader_param("outline_color", color)
 
 func set_team(team):
 	good_team = team
