@@ -23,7 +23,7 @@ func destroy():
 	queue_free()
 	
 
-func take_damage(damage):
+remotesync func take_damage(damage):
 	hp -= damage
 	if (hp <= 0):
 		destroy()
