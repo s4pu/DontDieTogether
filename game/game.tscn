@@ -26,8 +26,8 @@ extents = Vector2( 19.4735, 20.0481 )
 script = ExtResource( 1 )
 
 [node name="buildingSelection" parent="." instance=ExtResource( 7 )]
-offset = Vector2( 1100, 50 )
-transform = Transform2D( 1, 0, 0, 1, 1100, 50 )
+offset = Vector2( 1050, 50 )
+transform = Transform2D( 1, 0, 0, 1, 1050, 50 )
 
 [node name="Inventary" parent="." instance=ExtResource( 4 )]
 
