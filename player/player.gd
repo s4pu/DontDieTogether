@@ -5,6 +5,7 @@ var id
 var color: Color setget set_color
 var selected_building
 const speed = 200
+var good_team setget set_team
 var inventary = {
 	'mushroom': 0,
 	'wood': 0,
@@ -24,12 +25,13 @@ func _ready():
 	# pick our color, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_color(Color.from_hsv(randf(), 1, 1))
+	set_team(randf() >= 0.5)
 	$Camera2D.current = is_network_master()
 	
 
 func get_sync_state():
 	# place all synced properties in here
-	var properties = ['color']
+	var properties = ['color', 'good_team']
 	
 	var state = {}
 	for p in properties:
@@ -83,6 +85,10 @@ func can_shoot():
 func set_color(_color: Color):
 	color = _color
 	$sprite.modulate = color
+
+func set_team(team):
+	good_team = team
+	$sprite.texture = load("res://player/sloth.png") if good_team else load("res://player/koala.png")
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
