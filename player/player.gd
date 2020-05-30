@@ -69,8 +69,10 @@ func _process(dt):
 # warning-ignore:return_value_discarded
 			move_and_collide(Vector2(speed * dt, 0))
 			did_move = true
-		if Input.is_action_just_pressed("ui_accept"):
-			rpc("spawn_building", position)
+		if Input.is_action_just_pressed("ui_buildWall"):
+			rpc("spawn_wall", position)
+		if Input.is_action_just_pressed("ui_buildFence"):
+			rpc("spawn_fence", position)
 		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
 			last_shot_time = OS.get_ticks_msec()
 			var direction = -(position - get_global_mouse_position()).normalized()
@@ -112,22 +114,30 @@ remotesync func spawn_projectile(position, direction, name):
 	return projectile
 	
 func get_position_on_tilemap(position):
-	# 1, 1 --> 32, 32
-	# 33, 33 --> 32, 32
-	# 65, 65 --> 96, 96
 	var x = position[0]
 	var y = position[1]
 	var x_result = round((x-32)/64)*64 + 32
 	var y_result = round((y-32)/64)*64 + 32
 	return Vector2(x_result, y_result)
 
-remotesync func spawn_building(position):
-	var building = preload("res://buildings/building.tscn").instance()
-	building.good_team = good_team
-	building.position = get_position_on_tilemap(position)
-	get_parent().add_child(building)
-	building.connect("select_building", self, "select_building")
-	building.connect("deselect_building", self, "deselect_building")
+func spawn_building(building, position):
+	building._ready()
+	if inventary.has(building.needed_material) && inventary[building.needed_material] >= building.costs:
+		decrease_inventary(building.needed_material, building.costs)
+		building.good_team = good_team
+		building.position = get_position_on_tilemap(position)
+		get_parent().add_child(building)
+		building.connect("select_building", self, "select_building")
+		building.connect("deselect_building", self, "deselect_building")
+	
+remotesync func spawn_wall(position):
+	var building = preload("res://buildings/wall.tscn").instance()
+	spawn_building(building, position)
+		
+remotesync func spawn_fence(position):
+	var building = preload("res://buildings/fence.tscn").instance()
+	spawn_building(building, position)
+
 
 remotesync func take_damage(points):
 	hitpoints -= points
@@ -153,7 +163,7 @@ func collect(collectable):
 func update_inventary():
 	if is_network_master():
 		$"../../../Inventary".update_inventary(inventary)
-	
+
 func clear_inventory():
 	inventary = {
 		'mushroom': 0,
@@ -161,4 +171,7 @@ func clear_inventory():
 		'stone': 0,
 		'food': 0
 	}
+
+func decrease_inventary(material, costs):
+	inventary[material] = inventary[material] - costs
 	update_inventary()
