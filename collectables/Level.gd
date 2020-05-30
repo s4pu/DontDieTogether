@@ -17,7 +17,7 @@ func _ready():
 
 func spawn():
 	var num_elem = 500
-	var rng = RandomNumberGenerator.new()
+
 	
 	for i in num_elem:
 		var pos = Vector2(randi() % map_size, randi() % map_size)

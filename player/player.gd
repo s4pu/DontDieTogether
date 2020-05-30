@@ -87,7 +87,8 @@ func collect(collectable):
 	update_inventary()
 
 func update_inventary():
-	$"../Inventary".update_inventary(inventary)
+	if is_network_master():
+		$"../Inventary".update_inventary(inventary)
 	
 	
 	
