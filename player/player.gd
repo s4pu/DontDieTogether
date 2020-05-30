@@ -13,6 +13,7 @@ var inventary = {
 }
 
 var good_team = true
+var last_shot_time = 0
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
@@ -58,8 +59,9 @@ func _process(dt):
 			did_move = true
 		if Input.is_action_just_pressed("ui_accept"):
 			rpc("spawn_building", position)
-		if Input.is_mouse_button_pressed(BUTTON_LEFT):
-			var direction = -(position - get_viewport().get_mouse_position()).normalized()
+		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
+			last_shot_time = OS.get_ticks_msec()
+			var direction = -(position - get_global_mouse_position()).normalized()
 			rpc("spawn_projectile", position, direction, Uuid.v4())
 		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building): 
 		#&& (selected_building.good_team == good_team)):
@@ -74,6 +76,9 @@ func _process(dt):
 			$particles_steps.rotation = old_position.angle_to_point(position)
 		$particles_steps.emitting = did_move
 
+const WEAPON_COOLDOWN = 400 # milliseconds
+func can_shoot():
+	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
 
 func set_color(_color: Color):
 	color = _color
