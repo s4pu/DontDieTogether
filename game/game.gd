@@ -11,15 +11,18 @@ func _ready():
 	
 	if is_client:
 		peer.create_client(ip, port)
-		get_tree().connect("server_disconnected", self, "client_note_disconnected")
+		if get_tree().connect("server_disconnected", self, "client_note_disconnected") != OK:
+			print("An eror occured while trying to connect the server disconnected signal")
 	else:
 		print("Listening for connections on " + String(port) + " ...")
 		var err = peer.create_server(port, max_players)
 		if err != OK:
 			print('Network failed to initialize: ' + str(err))
 			get_tree().quit()
-		get_tree().connect("network_peer_connected", self, "server_player_connected")
-		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
+		if get_tree().connect("network_peer_connected", self, "server_player_connected") != OK:
+			print("An error occured while trying to connect the network peer connected signal")
+		if get_tree().connect("network_peer_disconnected", self, "server_player_disconnected") != OK:
+			print("An error occured while trying to connec the network peer disconnected signal")
 		
 		$shadow_casters_container/viewport/Level.spawn()
 	
