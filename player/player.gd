@@ -61,3 +61,6 @@ remotesync func spawn_box(position):
 
 remotesync func kill():
 	hide()
+
+func collect(collectable):
+	print("collect")
