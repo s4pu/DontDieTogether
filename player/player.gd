@@ -4,16 +4,10 @@ class_name Player
 signal health_changed(percentage)
 
 var id
-var color: Color setget set_color
 var selected_building
 const speed = 200
 var good_team setget set_team
-var inventary = {
-	'mushroom': 0,
-	'wood': 0,
-	'stone': 0,
-	'food': 0
-}
+var inventary = Global.EMPTY_INVENTORY.duplicate()
 
 remotesync var dead = false
 
@@ -26,9 +20,8 @@ func _ready():
 	set_process(true)
 	randomize()
 
-	# pick our color, even though this will be called on all clients, everyone
+	# pick our tean, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
-	set_color(Color.from_hsv(randf(), 1, 1))
 	set_team(randf() >= 0.5)
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
@@ -165,12 +158,8 @@ func update_inventary():
 		$"../../../Inventary".update_inventary(inventary)
 
 func clear_inventory():
-	inventary = {
-		'mushroom': 0,
-		'wood': 0,
-		'stone': 0,
-		'food': 0
-	}
+	inventary = Global.EMPTY_INVENTORY.duplicate()
+	update_inventary()
 
 func decrease_inventary(material, costs):
 	inventary[material] = inventary[material] - costs
