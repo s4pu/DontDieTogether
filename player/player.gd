@@ -5,15 +5,14 @@ signal health_changed(percentage)
 
 var id
 var selected_building
-const speed = 200
+var speed = 200
 var good_team setget set_team
 var inventary = Global.EMPTY_INVENTORY.duplicate()
 
-remotesync var dead = false
-
+var current_manifestation = "default"
 var last_shot_time = 0
-const MAX_HITPOINTS = 1000
-var hitpoints = MAX_HITPOINTS
+remotesync var hitpoints
+remotesync var dead = false
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
@@ -34,7 +33,7 @@ func _ready():
 
 func get_sync_state():
 	# place all synced properties in here
-	var properties = ['color', 'good_team']
+	var properties = ['color', 'good_team', "hitpoints"]
 	
 	var state = {}
 	for p in properties:
@@ -94,6 +93,14 @@ func set_team(team):
 	var color = Color.indianred if good_team else Color.royalblue
 	$sprite.material.set_shader_param("outline_color", color)
 
+remotesync func assume_manifestation(manifestation_name):
+	var manifestation = Global.ANIMALS[manifestation_name]
+	var health_percentage = hitpoints / manifestation["hitpoints"] if hitpoints != null else 1
+	
+	$sprite.texture = load("res://player/" + manifestation[good_team] + ".png")
+	hitpoints = ceil(manifestation["hitpoints"] * health_percentage)
+	speed = manifestation["speed"]
+
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
 	projectile.set_network_master(1)
@@ -130,10 +137,9 @@ remotesync func spawn_fence(position):
 	var building = preload("res://buildings/fence.tscn").instance()
 	spawn_building(building, position)
 
-
 remotesync func take_damage(points):
 	hitpoints -= points
-	emit_signal("health_changed", hitpoints / MAX_HITPOINTS)
+	emit_signal("health_changed", hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"])
 	
 	if hitpoints <= 0:
 		hide()

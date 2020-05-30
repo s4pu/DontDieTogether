@@ -58,6 +58,7 @@ good_team = true
 
 [node name="manifestation" parent="shadow_casters_container/viewport" instance=ExtResource( 10 )]
 position = Vector2( 935.042, 270.768 )
+manifestation_name = "fighter"
 
 [node name="RigidBody2D" type="RigidBody2D" parent="shadow_casters_container/viewport"]
 position = Vector2( 220.99, 136.671 )
