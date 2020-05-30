@@ -77,11 +77,21 @@ remotesync func spawn_projectile(position, direction, name):
 	projectile.good_team = good_team
 	get_parent().add_child(projectile)
 	return projectile
+	
+func get_position_on_tilemap(position):
+	# 1, 1 --> 32, 32
+	# 33, 33 --> 32, 32
+	# 65, 65 --> 96, 96
+	var x = position[0]
+	var y = position[1]
+	var x_result = round((x-32)/64)*64 + 32
+	var y_result = round((y-32)/64)*64 + 32
+	return Vector2(x_result, y_result)
 
 remotesync func spawn_building(position):
 	var building = preload("res://buildings/building.tscn").instance()
 	building.good_team = good_team
-	building.position = position
+	building.position = get_position_on_tilemap(position)
 	get_parent().add_child(building)
 	building.connect("select_building", self, "select_building")
 	building.connect("deselect_building", self, "deselect_building")
