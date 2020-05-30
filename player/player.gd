@@ -5,6 +5,7 @@ signal health_changed(percentage)
 
 var id
 var selected_building
+var previous_buildings_position = Vector2(0,0)
 const speed = 200
 var good_team setget set_team
 var inventary = Global.EMPTY_INVENTORY.duplicate()
@@ -71,8 +72,7 @@ func _process(dt):
 			last_shot_time = OS.get_ticks_msec()
 			var direction = -(position - get_global_mouse_position()).normalized()
 			rpc("spawn_projectile", position, direction, Uuid.v4())
-		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building): 
-		#&& (selected_building.good_team == good_team)):
+		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
 			if (selected_building.good_team == good_team):
 				selected_building.destroy()
 				selected_building = null
@@ -115,12 +115,23 @@ func get_position_on_tilemap(position):
 	var y_result = round((y-32)/64)*64 + 32
 	return Vector2(x_result, y_result)
 
+func get_position_after_building(me, building):
+	var direction = me - building
+	if direction.length() == 0:
+		direction = previous_buildings_position - building
+	print (direction.normalized())
+	var further = direction.normalized() * 95
+	print(further)
+	return get_position_on_tilemap(me - further)
+
 func spawn_building(building, position):
 	building._ready()
 	if inventary.has(building.needed_material) && inventary[building.needed_material] >= building.costs:
 		decrease_inventary(building.needed_material, building.costs)
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
+		self.position = get_position_after_building(position, building.position)
+		previous_buildings_position = building.position
 		get_parent().add_child(building)
 		building.connect("select_building", self, "select_building")
 		building.connect("deselect_building", self, "deselect_building")
