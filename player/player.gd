@@ -4,13 +4,14 @@ class_name Player
 var id
 var color: Color setget set_color
 const speed = 200
+var inventary = {}
 
 func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 	set_process(true)
 	randomize()
 	position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
-	
+		
 	# pick our color, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_color(Color.from_hsv(randf(), 1, 1))
@@ -63,4 +64,8 @@ remotesync func kill():
 	hide()
 
 func collect(collectable):
-	print("collect")
+	if not inventary.has(collectable.item_name):
+		inventary[collectable.item_name] = 1
+	else:
+		inventary[collectable.item_name] += 1
+

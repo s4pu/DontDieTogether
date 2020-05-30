@@ -17,8 +17,8 @@ func _ready():
 		peer.create_server(port, max_players)
 		get_tree().connect("network_peer_connected", self, "server_player_connected")
 		get_tree().connect("network_peer_disconnected", self, "server_player_disconnected")	
-		#spawn_collectable(Vector2(500, 500))
-		#spawn_collectable(Vector2(400, 400))
+		
+		$Level.spawn()
 		
 		if not is_dedicated:
 			register_player(1, null, {})
@@ -82,9 +82,3 @@ remote func register_player(player_id: int, position, state: Dictionary):
 
 remotesync func unregister_player(player_id: int):
 	remove_child(get_node(String(player_id)))
-
-func spawn_collectable(position):
-	var collectable = preload("res://collectables/Collectable.tscn").instance()
-	collectable.position = position
-	collectable.configure("item", "path/to/icon")
-	add_child(collectable)

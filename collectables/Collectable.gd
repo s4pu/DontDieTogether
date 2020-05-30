@@ -6,7 +6,7 @@ var icon
 func _ready():
 	set_network_master(1)
 	
-func configure(item_name, icon):
+remotesync func configure(item_name, icon):
 	item_name = item_name
 	icon = icon
 
