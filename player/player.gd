@@ -87,6 +87,10 @@ const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
 	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
 
+func set_color(_color: Color):
+	color = _color
+	$sprite.material.set_shader_param("outline_color", color)
+
 func set_team(team):
 	good_team = team
 	var animal =  Global.ANIMALS["default"][good_team]
