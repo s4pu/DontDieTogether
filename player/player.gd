@@ -20,13 +20,15 @@ func _ready():
 	set_process(true)
 	randomize()
 	position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
-		
+	
 	# pick our color, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_color(Color.from_hsv(randf(), 1, 1))
 	set_team(randf() >= 0.5)
 	$Camera2D.current = is_network_master()
 	
+	$particles_steps.rset_config("emitting", MultiplayerAPI.RPC_MODE_REMOTESYNC)
+	$particles_steps.rset_config("rotation", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 
 func get_sync_state():
 	# place all synced properties in here
@@ -74,8 +76,8 @@ func _process(dt):
 		
 		if did_move:
 			rset("position", position)
-			$particles_steps.rotation = old_position.angle_to_point(position)
-		$particles_steps.emitting = did_move
+			$particles_steps.rset('rotation', old_position.angle_to_point(position))
+		$particles_steps.rset('emitting', did_move)
 
 const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
