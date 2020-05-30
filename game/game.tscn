@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://game/game.gd" type="Script" id=1]
 [ext_resource path="res://sync/sync.tscn" type="PackedScene" id=2]
@@ -9,14 +9,15 @@
 [ext_resource path="res://buildings/buildingSelection.tscn" type="PackedScene" id=7]
 [ext_resource path="res://shaders/shadow_casters_container.gd" type="Script" id=8]
 [ext_resource path="res://player/Base.tscn" type="PackedScene" id=9]
+[ext_resource path="res://manifestation/manifestation.tscn" type="PackedScene" id=10]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 6 )
 shader_param/offset = Vector2( 8, -8 )
-shader_param/modulate = Color( 0, 0, 0, 1 )
-shader_param/blurRadius = 7.75
+shader_param/modulate = Color( 0, 0, 0, 0.721569 )
+shader_param/blurRadius = 3.358
 shader_param/sampleRadius = 3
-shader_param/shadowAlpha = 0.588
+shader_param/shadowAlpha = 1.0
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 19.4735, 20.0481 )
@@ -54,6 +55,10 @@ physics_object_picking = true
 good_team = true
 
 [node name="EvilBase" parent="shadow_casters_container/viewport" instance=ExtResource( 9 )]
+
+[node name="manifestation" parent="shadow_casters_container/viewport" instance=ExtResource( 10 )]
+position = Vector2( 935.042, 270.768 )
+manifestation_name = "fighter"
 
 [node name="RigidBody2D" type="RigidBody2D" parent="shadow_casters_container/viewport"]
 position = Vector2( 220.99, 136.671 )
