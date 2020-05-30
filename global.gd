@@ -23,8 +23,8 @@ const ANIMALS = {
 		"speed": 150,
 	},
 	"fighter": {
-		true: "",
-		false: "",
+		true: "wolf",
+		false: "crocodile",
 		"hitpoints": 150,
 		"speed": 200,
 	},
