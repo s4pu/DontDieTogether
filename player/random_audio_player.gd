@@ -17,7 +17,7 @@ remotesync func play_random():
 		return
 	
 	#var cam_pos = get_viewport().get_camera().get_global_pos()
-	if global_position.distance_to(cam_pos) > 1000:
+	if global_position.distance_to(cam_pos) > 600:
 		return
 	var index = rng.randi_range(0, sounds.size() - 1)
 	sounds[index].play()
