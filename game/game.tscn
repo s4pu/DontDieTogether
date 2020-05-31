@@ -35,7 +35,9 @@ script = ExtResource( 1 )
 offset = Vector2( 1050, 50 )
 transform = Transform2D( 1, 0, 0, 1, 1050, 50 )
 
-[node name="Inventory" parent="." instance=ExtResource( 4 )]
+[node name="Player_Inventory" parent="." instance=ExtResource( 4 )]
+
+[node name="Base_Inventory" parent="." instance=ExtResource( 4 )]
 
 [node name="color_tint_container" type="ViewportContainer" parent="."]
 material = SubResource( 1 )

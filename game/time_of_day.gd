@@ -6,7 +6,8 @@ onready var shadow_cont = $"../color_tint_container/viewport/shadow_casters_cont
 var start_time = 0.0
 remotesync var progress = 0.0
 
-const DAY_LENGTH_MSECS = 1000 * 60 * 2
+const START_PROGRESS = 0.3
+const DAY_LENGTH_MSECS = 1000 * 60 * 1
 const MAX_SHADOW_X_OFFSET = 16.0
 const MAX_SHADOW_Y_OFFSET = 4.0
 const MAX_SHADOW_ALPHA = 2.5
@@ -18,7 +19,7 @@ func _ready():
 func _process(delta):
 	if is_network_master():
 		var current_time = OS.get_ticks_msec() - start_time
-		var new_progress = fmod((current_time % DAY_LENGTH_MSECS) / float(DAY_LENGTH_MSECS), 1.0)
+		var new_progress = fmod(START_PROGRESS + (current_time % DAY_LENGTH_MSECS) / float(DAY_LENGTH_MSECS), 1.0)
 		rset_unreliable("progress", new_progress)
 		
 	set_time_of_day()

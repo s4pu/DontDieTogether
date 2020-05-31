@@ -1,5 +1,8 @@
 extends CanvasLayer
 
+func set_visibility(visible):
+	$Margin.visible = visible
+
 func update_inventory(inventory):
 	$Margin/Row/wood/Count/Label.text = str(inventory['wood'])
 	$Margin/Row/stone/Count/Label.text = str(inventory['stone'])
