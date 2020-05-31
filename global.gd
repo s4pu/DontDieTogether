@@ -71,7 +71,7 @@ var ANIMALS = {
 		true: "beaver",
 		false: "mole",
 		"hitpoints": 100,
-		"speed": 150,
+		"speed": 90,
 		"behaviour": BuildingBehaviour,
 		"building_damage": 0,
 		"player_damage": 0,
