@@ -6,6 +6,8 @@ const MAX_HP = 200
 var hp = MAX_HP setget set_hitpoints
 var good_team
 
+var damage_on_contact = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
