@@ -149,16 +149,14 @@ func get_position_after_building(me, building):
 	var direction = me - building
 	if direction.length() == 0:
 		direction = previous_buildings_position - building
-	print (direction.normalized())
 	var further = direction.normalized() * 95
-	print(further)
 	return get_position_on_tilemap(me - further)
 
 func spawn_building(building, position):
 	building._ready()
 	if behaviour().can_build() &&\
-	  inventory_has_needed_materials(building.needed_material, building.costs):
-		decrease_inventory(building.needed_material, building.costs)
+	  base_inventory_has_needed_materials(building.needed_material, building.costs):
+		decrease_base_inventory(building.needed_material, building.costs)
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
 		self.position = get_position_after_building(position, building.position)
@@ -218,17 +216,19 @@ func clear_inventory():
 		inventory = Global.EMPTY_INVENTORY.duplicate()
 		update_inventory()
 
-func decrease_inventory(materials, costs):
-	if is_network_master() && behaviour().can_collect():
+func get_base():
+	return $"../GoodBase" if good_team else $"../EvilBase"
+
+func decrease_base_inventory(materials, costs):
+	if is_network_master() && behaviour().can_build():
 		for i in range(len(materials)):
-			inventory[materials[i]] = inventory[materials[i]] - costs[i]
-		update_inventory()
+			get_base().rpc("increment_item", materials[i], -costs[i])
 	
-func inventory_has_needed_materials(materials, costs):
+func base_inventory_has_needed_materials(materials, costs):
 	var has_enough_material = false
 	for i in range(len(materials)):
-		if inventory.has(materials[i]):
-			if inventory[materials[i]] >= costs[i]:
+		if get_base().inventory.has(materials[i]):
+			if get_base().inventory[materials[i]] >= costs[i]:
 				has_enough_material = true
 			else:
 				has_enough_material = false

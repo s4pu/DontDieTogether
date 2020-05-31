@@ -79,10 +79,10 @@ class AnimalBehaviour:
 	func can_siege():
 		return false
 
-class BuildingBehaviour:
+class BuildingBehaviour extends AnimalBehaviour:
 	func can_build():
 		return true
 
-class CollectingBehaviour:
+class CollectingBehaviour extends AnimalBehaviour:
 	func can_collect():
 		return true
