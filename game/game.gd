@@ -24,7 +24,7 @@ func _ready():
 		if get_tree().connect("network_peer_disconnected", self, "server_player_disconnected") != OK:
 			print("An error occured while trying to connec the network peer disconnected signal")
 		
-		$shadow_casters_container/viewport/Level.spawn()
+		$color_tint_container/viewport/shadow_casters_container/viewport/Level.spawn()
 	
 	get_tree().set_network_peer(peer)
 	
@@ -81,7 +81,7 @@ remote func register_player(player_id: int, position, state: Dictionary):
 	player.name = String(player.id)
 	player.add_to_group("players")
 	
-	$shadow_casters_container/viewport.add_child(player)
+	$color_tint_container/viewport/shadow_casters_container/viewport.add_child(player)
 	
 	if position:
 		player.position = position
