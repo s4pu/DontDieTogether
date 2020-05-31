@@ -13,6 +13,7 @@ var target_list = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	max_hp = tower_hp
 	hp = tower_hp
 	costs = tower_costs
 	needed_material = tower_material
