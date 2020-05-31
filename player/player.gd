@@ -69,6 +69,9 @@ func _process(dt):
 			rpc("spawn_wall", position)
 		if Input.is_action_just_pressed("ui_buildFence"):
 			rpc("spawn_fence", position)
+		if Input.is_action_just_pressed("ui_buildTower"):
+			print("test")
+			rpc("spawn_tower", position)
 		if Input.is_action_just_pressed("ui_buildSpikes"):
 			rpc("spawn_spikes", position)
 		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
@@ -154,8 +157,7 @@ func get_position_after_building(me, building):
 func spawn_building(building, position):
 	building._ready()
 	if behaviour().can_build() &&\
-	  inventory.has(building.needed_material) &&\
-	  inventory[building.needed_material] >= building.costs:
+	  inventory_has_needed_materials(building.needed_material, building.costs):
 		decrease_inventory(building.needed_material, building.costs)
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
@@ -174,6 +176,9 @@ remotesync func spawn_fence(position):
 	if behaviour().can_build():
 		var building = preload("res://buildings/fence.tscn").instance()
 		spawn_building(building, position)
+
+remotesync func spawn_tower(position):
+	var building = preload("res://buildings/tower.tscn").instance()
 
 remotesync func spawn_spikes(position):
 	if behaviour().can_build():
@@ -213,7 +218,18 @@ func clear_inventory():
 		inventory = Global.EMPTY_INVENTORY.duplicate()
 		update_inventory()
 
-func decrease_inventory(material, costs):
+func decrease_inventory(materials, costs):
 	if is_network_master() && behaviour().can_collect():
-		inventory[material] = inventory[material] - costs
+		for i in range(len(materials)):
+			inventory[materials[i]] = inventory[materials[i]] - costs[i]
 		update_inventory()
+	
+func inventory_has_needed_materials(materials, costs):
+	var has_enough_material = false
+	for i in range(len(materials)):
+		if inventory.has(materials[i]):
+			if inventory[materials[i]] >= costs[i]:
+				has_enough_material = true
+			else:
+				has_enough_material = false
+	return has_enough_material
