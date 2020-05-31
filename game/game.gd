@@ -3,6 +3,7 @@ extends Node2D
 var port = 8899
 var ip = '127.0.0.1'
 var max_players = 200
+var manifestations_menu
 
 # put game-specific (non network) init things here
 func game_ready():
@@ -12,16 +13,17 @@ func game_ready():
 	$shadow_casters_container/viewport/EvilBase.connect("base_exited", self, "hide_manifestations")
 
 func show_manifestations():
-	var menu = preload("res://UI/manifestation_selection.tscn").instance()
-	menu.name = 'manifestation_selection'
-	menu.connect("manifestation_selected", self, "manifestation_selected")
-	add_child(menu)
+	if not manifestations_menu:
+		manifestations_menu = preload("res://UI/manifestation_selection.tscn").instance()
+		manifestations_menu.name = 'manifestation_selection'
+		manifestations_menu.connect("manifestation_selected", self, "manifestation_selected")
+		add_child(manifestations_menu)
 func manifestation_selected(name):
 	my_player().rpc("assume_manifestation", name)
 func hide_manifestations():
-	var selection = get_node_or_null('manifestation_selection')
-	if selection:
-		selection.queue_free()
+	if manifestations_menu:
+		manifestations_menu.queue_free()
+		manifestations_menu = null
 
 func my_player():
 	for player in get_tree().get_nodes_in_group("players"):
