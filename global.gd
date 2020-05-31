@@ -52,7 +52,7 @@ var ANIMALS = {
 	"siege": {
 		true: "ram",
 		false: "rhino",
-		"hitpoints": 100,
+		"hitpoints": 500,
 		"speed": 80,
 		"behaviour": SiegeBehaviour,
 		"building_damage": 30,
@@ -83,7 +83,7 @@ var ANIMALS = {
 		"speed": 150,
 		"behaviour": RangedBehaviour,
 		"player_damage": 80,
-		"building_damage": 20,
+		"building_damage": 3,
 	}
 }
 

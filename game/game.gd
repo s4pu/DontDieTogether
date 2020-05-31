@@ -118,9 +118,10 @@ func server_player_connected(player_id: int):
 
 remotesync func loading_started():
 	$loading_screen.show()
+
 remotesync func loading_finished():
 	remove_child($loading_screen)
-
+	
 func server_player_disconnected(player_id: int):
 	print("Disconnected ", player_id)
 	rpc("unregister_player", player_id)
@@ -161,7 +162,15 @@ remote func register_player(player_id: int, position, state: Dictionary, good_te
 		player.position = position
 	for property in state:
 		player.set(property, state[property])
+	
+	update_team_comp(null)
+	player.connect("manifestation_changed", self, "update_team_comp")
+	
 	return player
+
+func update_team_comp(m):
+	$team_composition_good.update_player_list(true)
+	$team_composition_evil.update_player_list(false)
 
 remotesync func unregister_player(player_id: int):
 	remove_child(get_node(String(player_id)))

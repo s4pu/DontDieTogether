@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://game/game.gd" type="Script" id=1]
 [ext_resource path="res://UI/fonts/Piedra-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://UI/team_composition_view.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Inventory.tscn" type="PackedScene" id=4]
 [ext_resource path="res://collectables/Level.tscn" type="PackedScene" id=5]
 [ext_resource path="res://shaders/softshadow.shader" type="Shader" id=6]
@@ -121,3 +122,15 @@ text = "Loading ... "
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="team_composition_good" parent="." instance=ExtResource( 3 )]
+margin_left = 33.0207
+margin_top = 641.732
+margin_right = 33.0207
+margin_bottom = 641.732
+
+[node name="team_composition_evil" parent="." instance=ExtResource( 3 )]
+margin_left = 1116.0
+margin_top = 639.973
+margin_right = 1116.0
+margin_bottom = 639.973
