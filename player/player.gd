@@ -33,6 +33,8 @@ func _ready():
 	
 	$particles_steps.rset_config("emitting", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 	$particles_steps.rset_config("rotation", MultiplayerAPI.RPC_MODE_REMOTESYNC)
+	
+	#get_tree().get_root().get_node("game/Player_Inventory").connect("update_inventory", self, update_player_inventory())
 
 func get_sync_state():
 	# place all synced properties in here
@@ -123,8 +125,16 @@ func set_manifestation(name):
 	hitpoints = ceil(manifestation["hitpoints"] * health_percentage)
 	speed = manifestation["speed"]
 	current_manifestation = name
+	get_player_inventory().set_visibility(behaviour().can_collect())
+	get_base_inventory().set_visibility(behaviour().can_build())
 	
 	emit_signal("manifestation_changed", name)
+
+func get_player_inventory():
+	return $"../../../../../Player_Inventory"
+	
+func get_base_inventory():
+	return $"../../../../../Base_Inventory"
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
@@ -206,16 +216,20 @@ func deselect_building():
 func collect(collectable):
 	if behaviour().can_collect():
 		inventory[collectable.item_name] += 1
-		update_inventory()
+		update_player_inventory()
 
-func update_inventory():
+func update_player_inventory():
 	if is_network_master() && behaviour().can_collect():
-		$"../../../../../Inventory".update_inventory(inventory)
+		get_player_inventory().update_inventory(inventory)
 
-func clear_inventory():
+func update_base_inventory():
+	if is_network_master():
+		get_base_inventory().update_inventory(get_base().inventory)
+
+func clear_player_inventory():
 	if is_network_master() && behaviour().can_collect():
 		inventory = Global.EMPTY_INVENTORY.duplicate()
-		update_inventory()
+		update_player_inventory()
 
 func get_base():
 	return $"../GoodBase" if good_team else $"../EvilBase"
@@ -224,6 +238,7 @@ func decrease_base_inventory(materials, costs):
 	if is_network_master() && behaviour().can_build():
 		for i in range(len(materials)):
 			get_base().rpc("increment_item", materials[i], -costs[i])
+		update_base_inventory()
 	
 func base_inventory_has_needed_materials(materials, costs):
 	var has_enough_material = false
