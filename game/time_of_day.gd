@@ -15,6 +15,8 @@ const NIGHT_COLOR = Color.darkslateblue
 
 func _ready():
 	start_time = OS.get_ticks_msec()
+	$day.volume_db = -999.0
+	$night.volume_db = -999.0
 
 func _process(delta):
 	if is_network_master():
@@ -29,10 +31,13 @@ func set_time_of_day():
 	shadow_cont.material.set_shader_param("offset", Vector2(shadow_x_offset, -MAX_SHADOW_Y_OFFSET))
 	
 	var night = abs(2.0 * (progress - 0.5))
+	var day = 1.0 - night
 	
-	var shadow_alpha = MAX_SHADOW_ALPHA * (1.0 - night)
+	var shadow_alpha = MAX_SHADOW_ALPHA * (day)
 	shadow_cont.material.set_shader_param("shadowAlpha", shadow_alpha)
 	
-	
 	tint_cont.material.set_shader_param("tint_color", Color.white * (1.0 - night) + NIGHT_COLOR * night)
+	
+	$day.volume_db = -36.0 * night
+	$night.volume_db = -24.0 * day
 	

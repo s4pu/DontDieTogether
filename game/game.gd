@@ -17,7 +17,14 @@ func game_ready():
 	viewport.get_node("EvilBase").connect("base_entered", self, "show_manifestations")
 # warning-ignore:return_value_discarded
 	viewport.get_node("EvilBase").connect("base_exited", self, "hide_manifestations")
+	
+	viewport.get_node("GoodBase").get_node("Artefact").connect("game_over", self, "show_game_over", ["evil"])
+	viewport.get_node("EvilBase").get_node("Artefact").connect("game_over", self, "show_game_over", ["good"])
 
+func show_game_over(team):
+	Global.winning_team = team
+	get_tree().change_scene("res://game/gameOver.tscn")
+	
 func show_manifestations():
 	if not manifestations_menu:
 		manifestations_menu = preload("res://UI/manifestation_selection.tscn").instance()
@@ -52,9 +59,10 @@ func _ready():
 	var peer = NetworkedMultiplayerENet.new()
 	var is_client = "--client" in OS.get_cmdline_args()
 	var is_dedicated = "--dedicated" in OS.get_cmdline_args()
-	var host = 'g.tmbe.me' if '-t' in OS.get_cmdline_args() else ip
+	var host = 'g.tmbe.me' if '--tmbe' in OS.get_cmdline_args() else ip
 	
 	if is_client:
+		print('Connecting to ' + str(host) + ':' + str(port))
 		peer.create_client(host, port)
 		if get_tree().connect("server_disconnected", self, "client_note_disconnected") != OK:
 			print("An eror occured while trying to connect the server disconnected signal")
