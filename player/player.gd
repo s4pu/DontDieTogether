@@ -94,8 +94,7 @@ func _process(dt):
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) \
-			  and (behaviour().can_ranged_fight() or behaviour().can_heal() or behaviour().can_siege())\
-			  and can_shoot():
+			  and can_shoot() and behaviour().can_shoot():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				if behaviour().can_siege():
@@ -106,6 +105,7 @@ func _process(dt):
 					did_move = true
 				else:
 					rpc("spawn_projectile", position, direction, Uuid.v4())
+				behaviour().after_shoot()
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit() and behaviour().can_melee_fight():
 				last_hit_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
@@ -188,7 +188,7 @@ func get_player_inventory():
 	
 func get_base_inventory():
 	return $"../../../../../Base_Inventory"
-
+	
 func get_building_menu():
 	return $"../../../../../buildingSelection"
 
@@ -298,7 +298,9 @@ remotesync func respawn():
 	show()
 
 func behaviour():
-	return Global.ANIMALS[current_manifestation]["behaviour"].new()
+	var b = Global.ANIMALS[current_manifestation]["behaviour"].new()
+	b.player = self
+	return b
 
 func select_building(building):
 	if behaviour().can_build():
@@ -330,7 +332,7 @@ func get_base():
 	return $"../GoodBase" if good_team else $"../EvilBase"
 
 func decrease_base_inventory(materials, costs):
-	if is_network_master() && behaviour().can_build():
+	if is_network_master():
 		for i in range(len(materials)):
 			get_base().rpc("increment_item", materials[i], -costs[i])
 		update_base_inventory()
