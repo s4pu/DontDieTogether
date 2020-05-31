@@ -109,8 +109,6 @@ remotesync func drop_manifestation(position):
 
 func set_team(team):
 	good_team = team
-	#var animal =  Global.ANIMALS["default"][good_team]
-	#$sprite.texture = load("res://player/" + animal + ".png")
 	var color = Color.indianred if good_team else Color.royalblue
 	$sprite.material.set_shader_param("outline_color", color)
 
@@ -151,15 +149,14 @@ func get_position_after_building(me, building):
 	var direction = me - building
 	if direction.length() == 0:
 		direction = previous_buildings_position - building
-	print (direction.normalized())
 	var further = direction.normalized() * 95
-	print(further)
 	return get_position_on_tilemap(me - further)
 
 func spawn_building(building, position):
 	building._ready()
-	if inventory_has_needed_materials(building.needed_material, building.costs):
-		decrease_inventory(building.needed_material, building.costs)
+	if behaviour().can_build() &&\
+	  base_inventory_has_needed_materials(building.needed_material, building.costs):
+		decrease_base_inventory(building.needed_material, building.costs)
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
 		self.position = get_position_after_building(position, building.position)
@@ -169,19 +166,22 @@ func spawn_building(building, position):
 		building.connect("deselect_building", self, "deselect_building")
 	
 remotesync func spawn_wall(position):
-	var building = preload("res://buildings/wall.tscn").instance()
-	spawn_building(building, position)
+	if behaviour().can_build():
+		var building = preload("res://buildings/wall.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_fence(position):
-	var building = preload("res://buildings/fence.tscn").instance()
-	spawn_building(building, position)
+	if behaviour().can_build():
+		var building = preload("res://buildings/fence.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_tower(position):
 	var building = preload("res://buildings/tower.tscn").instance()
 
 remotesync func spawn_spikes(position):
-	var building = preload("res://buildings/spikes.tscn").instance()
-	spawn_building(building, position)
+	if behaviour().can_build():
+		var building = preload("res://buildings/spikes.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func take_damage(points):
 	hitpoints -= points
@@ -191,37 +191,44 @@ remotesync func take_damage(points):
 		hide()
 		rset("dead", true)
 
+func behaviour():
+	return Global.ANIMALS[current_manifestation]["behaviour"].new()
+
 func select_building(building):
-	selected_building = building
+	if behaviour().can_build():
+		selected_building = building
 	
 func deselect_building():
-	selected_building = null
+	if behaviour().can_build():
+		selected_building = null
 
 func collect(collectable):
-	if not inventory.has(collectable.item_name):
-		inventory[collectable.item_name] = 1
-	else:
+	if behaviour().can_collect():
 		inventory[collectable.item_name] += 1
-	update_inventory()
+		update_inventory()
 
 func update_inventory():
-	if is_network_master():
-		$"../../../Inventary".update_inventary(inventory)
+	if is_network_master() && behaviour().can_collect():
+		$"../../../Inventory".update_inventory(inventory)
 
 func clear_inventory():
-	inventory = Global.EMPTY_INVENTORY.duplicate()
-	update_inventory()
+	if is_network_master() && behaviour().can_collect():
+		inventory = Global.EMPTY_INVENTORY.duplicate()
+		update_inventory()
 
-func decrease_inventory(materials, costs):
-	for i in range(len(materials)):
-		inventory[materials[i]] = inventory[materials[i]] - costs[i]
-	update_inventory()
+func get_base():
+	return $"../GoodBase" if good_team else $"../EvilBase"
+
+func decrease_base_inventory(materials, costs):
+	if is_network_master() && behaviour().can_build():
+		for i in range(len(materials)):
+			get_base().rpc("increment_item", materials[i], -costs[i])
 	
-func inventory_has_needed_materials(materials, costs):
+func base_inventory_has_needed_materials(materials, costs):
 	var has_enough_material = false
 	for i in range(len(materials)):
-		if inventory.has(materials[i]):
-			if inventory[materials[i]] >= costs[i]:
+		if get_base().inventory.has(materials[i]):
+			if get_base().inventory[materials[i]] >= costs[i]:
 				has_enough_material = true
 			else:
 				has_enough_material = false

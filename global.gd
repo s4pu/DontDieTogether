@@ -9,12 +9,13 @@ const EMPTY_INVENTORY = {
 	"mushroom": 0
 }
 
-const ANIMALS = {
+var ANIMALS = {
 	"default": {
 		true: "koala",
 		false: "sloth",
 		"hitpoints": 100,
 		"speed": 100,
+		"behaviour": AnimalBehaviour,
 	},
 	"cook": {
 		true: "cow",
@@ -45,12 +46,14 @@ const ANIMALS = {
 		false: "monkey",
 		"hitpoints": 70,
 		"speed": 300,
+		"behaviour": CollectingBehaviour,
 	},
 	"builder": {
 		true: "beaver",
 		false: "mole",
 		"hitpoints": 100,
 		"speed": 150,
+		"behaviour": BuildingBehaviour,
 	},
 	"ranged": {
 		true: "",
@@ -59,3 +62,27 @@ const ANIMALS = {
 		"speed": 150,
 	}
 }
+
+class AnimalBehaviour:
+	func can_build():
+		return false
+	func can_collect():
+		return false
+	func can_melee_fight():
+		return false
+	func can_heal():
+		return false
+	func can_ranged_right():
+		return false
+	func can_cook():
+		return false
+	func can_siege():
+		return false
+
+class BuildingBehaviour extends AnimalBehaviour:
+	func can_build():
+		return true
+
+class CollectingBehaviour extends AnimalBehaviour:
+	func can_collect():
+		return true

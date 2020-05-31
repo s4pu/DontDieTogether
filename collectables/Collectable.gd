@@ -7,7 +7,9 @@ func _ready():
 	set_network_master(1)
 
 func _on_Area2D_body_entered(body):
-	if body.is_in_group("players") and body.is_network_master():
+	if body.is_in_group("players") \
+	  and body.is_network_master() \
+	  and body.behaviour().can_collect():
 		body.collect(self)
 		rpc("die")
 

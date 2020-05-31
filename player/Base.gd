@@ -1,7 +1,12 @@
 extends Area2D
 
 export (bool) var good_team
-var inventary = Global.EMPTY_INVENTORY.duplicate()
+var inventory = {
+	"wood": 20,
+	"stone": 20,
+	"food": 20,
+	"mushroom": 20,
+}
 
 signal base_entered
 signal base_exited
@@ -14,15 +19,16 @@ func _on_Base_body_entered(body):
 	if body.is_in_group("players") && \
 		  body.is_network_master() && \
 		  body.good_team == good_team:
-		unload_inventary(body.inventory)
+		unload_inventory(body.inventory)
 		body.clear_inventory()
 		
+func unload_inventory(player_inventory):
+	for item in Global.RESOURCES:
+		rpc("increment_item", item, player_inventory[item])
 		emit_signal("base_entered")
 
-func unload_inventary(player_inventary):
-	for item in Global.RESOURCES:
-		inventary[item] += player_inventary[item]
-
+remotesync func increment_item(name, amount):
+	inventory[name] += amount
 
 func _on_Base_body_exited(body):
 	if body.is_in_group("players") && \
