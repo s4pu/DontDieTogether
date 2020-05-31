@@ -152,6 +152,10 @@ func set_team(team):
 	var color = Color.royalblue if good_team else Color.indianred
 	$sprite.material = $sprite.material.duplicate()
 	$sprite.material.set_shader_param("outline_color", color)
+	
+	var box = StyleBoxFlat.new()
+	box.bg_color = color
+	$Health.add_stylebox_override("fg", box)
 
 remotesync func assume_manifestation(manifestation_name):
 	# TODO: spawn effect showing the change
