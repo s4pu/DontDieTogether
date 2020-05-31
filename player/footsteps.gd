@@ -5,7 +5,7 @@ onready var footsteps = get_children()
 var rng = RandomNumberGenerator.new()
 
 func play_if_necessary():
-	var speed = get_parent().speed
+	var speed = get_parent().get_parent().speed
 	var footstep_interval_msecs = 50000 / speed
 	var now = OS.get_ticks_msec()
 	var last_footstep_duration = now - last_footstep_timestamp
