@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/sloth.png" type="Texture" id=2]
@@ -9,6 +9,12 @@
 [ext_resource path="res://audio/footstep_grass_heavy_1.wav" type="AudioStream" id=7]
 [ext_resource path="res://audio/footstep_grass_medium_2.wav" type="AudioStream" id=8]
 [ext_resource path="res://player/footsteps.gd" type="Script" id=9]
+[ext_resource path="res://audio/woosh_2.wav" type="AudioStream" id=10]
+[ext_resource path="res://audio/woosh_1.wav" type="AudioStream" id=11]
+[ext_resource path="res://audio/woosh_3.wav" type="AudioStream" id=12]
+[ext_resource path="res://audio/woosh_5.wav" type="AudioStream" id=13]
+[ext_resource path="res://audio/woosh_4.wav" type="AudioStream" id=14]
+[ext_resource path="res://player/random_audio_player.gd" type="Script" id=15]
 
 [sub_resource type="ParticlesMaterial" id=1]
 flag_disable_z = true
@@ -90,3 +96,21 @@ volume_db = -25.077
 [node name="footstep_5" type="AudioStreamPlayer" parent="footsteps"]
 stream = ExtResource( 8 )
 volume_db = -25.077
+
+[node name="wooshes" type="Node" parent="."]
+script = ExtResource( 15 )
+
+[node name="woosh_1" type="AudioStreamPlayer" parent="wooshes"]
+stream = ExtResource( 11 )
+
+[node name="woosh_2" type="AudioStreamPlayer" parent="wooshes"]
+stream = ExtResource( 10 )
+
+[node name="woosh_3" type="AudioStreamPlayer" parent="wooshes"]
+stream = ExtResource( 12 )
+
+[node name="woosh_4" type="AudioStreamPlayer" parent="wooshes"]
+stream = ExtResource( 14 )
+
+[node name="woosh_5" type="AudioStreamPlayer" parent="wooshes"]
+stream = ExtResource( 13 )

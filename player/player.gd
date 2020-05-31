@@ -102,6 +102,7 @@ func _process(dt):
 					charge_direction = direction
 					collision = move_and_collide(- direction * charge_back_speed * dt)
 					did_move = true
+					$wooshes.play_random()
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_shoot():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
@@ -111,6 +112,7 @@ func _process(dt):
 				last_hit_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
+				$wooshes.play_random()
 			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
 				if selected_building.good_team == good_team:
 					selected_building.destroy()
