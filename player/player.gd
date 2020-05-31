@@ -2,6 +2,7 @@ extends KinematicBody2D
 class_name Player
 
 signal health_changed(percentage)
+signal manifestation_changed(name)
 
 var id
 var selected_building
@@ -10,7 +11,7 @@ var speed = 200
 var good_team setget set_team
 var inventory = Global.EMPTY_INVENTORY.duplicate()
 
-var current_manifestation = "default"
+var current_manifestation setget set_manifestation
 var last_shot_time = 0
 remotesync var hitpoints
 remotesync var dead = false
@@ -35,7 +36,7 @@ func _ready():
 
 func get_sync_state():
 	# place all synced properties in here
-	var properties = ['color', 'good_team', "hitpoints"]
+	var properties = ['color', 'good_team', "hitpoints", "current_manifestation"]
 	
 	var state = {}
 	for p in properties:
@@ -80,6 +81,8 @@ func _process(dt):
 				selected_building = null
 		if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
 			good_team = not good_team
+		if Input.is_action_just_pressed("free_manifestation"):
+			rpc("drop_manifestation", position)
 		
 		if did_move:
 			rset("position", position)
@@ -92,6 +95,15 @@ const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
 	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
 
+remotesync func drop_manifestation(position):
+	var pickup = preload("res://manifestation/manifestation.tscn").instance()
+	pickup.position = position
+	pickup.manifestation_name = current_manifestation
+	pickup.dropped_by = id
+	get_parent().add_child(pickup)
+	
+	assume_manifestation("default")
+
 func set_team(team):
 	good_team = team
 	#var animal =  Global.ANIMALS["default"][good_team]
@@ -100,12 +112,19 @@ func set_team(team):
 	$sprite.material.set_shader_param("outline_color", color)
 
 remotesync func assume_manifestation(manifestation_name):
-	var manifestation = Global.ANIMALS[manifestation_name]
+	# TODO: spawn effect showing the change
+	set_manifestation(manifestation_name)
+
+func set_manifestation(name):
+	var manifestation = Global.ANIMALS[name]
 	var health_percentage = hitpoints / manifestation["hitpoints"] if hitpoints != null else 1
 	
 	$sprite.texture = load("res://player/" + manifestation[good_team] + ".png")
 	hitpoints = ceil(manifestation["hitpoints"] * health_percentage)
 	speed = manifestation["speed"]
+	current_manifestation = name
+	
+	emit_signal("manifestation_changed", name)
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
