@@ -39,7 +39,6 @@ func _process(delta):
 func _on_Timer_timeout():
 	rpc("kill")
 
-
 func _on_Area2D_body_entered(body):
 	if body.good_team != good_team:
-		body.take_damage(5)
+		body.rpc("take_damage", 5)
