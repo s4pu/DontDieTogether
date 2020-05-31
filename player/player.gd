@@ -16,7 +16,6 @@ const charge_forward_speed = 900
 const charge_back_duration = 350	# milliseconds
 const charge_forward_duration = 250	# milliseconds
 const charging_damage = 50
-const charging_cooldown = 500 # milliseconds
 
 var last_charge_time = 0
 var charge_start_time
@@ -25,7 +24,6 @@ var charging_status = 0 	#  0) no charge  1) back   2) forward
 
 var current_manifestation setget set_manifestation
 var last_shot_time = 0
-var last_hit_time = 0
 remotesync var hitpoints setget set_hitpoints
 remotesync var dead = false
 
@@ -96,7 +94,7 @@ func _process(dt):
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and behaviour().can_siege():
-				if OS.get_ticks_msec() - last_charge_time > charging_cooldown:
+				if OS.get_ticks_msec() - last_charge_time > behaviour().weapon_cooldown():
 					var direction = -(position - get_global_mouse_position()).normalized()
 					charging_status = 1
 					charge_start_time = OS.get_ticks_msec()
@@ -108,12 +106,12 @@ func _process(dt):
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
-			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit() and behaviour().can_melee_fight():
-				last_hit_time = OS.get_ticks_msec()
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
+				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
-			if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
-				if (selected_building.good_team == good_team):
+			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
+				if selected_building.good_team == good_team:
 					selected_building.destroy()
 					selected_building = null
 			if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
@@ -131,16 +129,14 @@ func _process(dt):
 						charging_status = 0
 					else:
 						rpc("take_damage", collision.get_collider().damage_on_contact)
+						
+			$footsteps.play_if_necessary()
+						
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
-const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
-	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
-
-const MELEE_WEAPON_COOLDOWN = 1000 # milliseconds
-func can_hit():
-	return OS.get_ticks_msec() - last_hit_time > MELEE_WEAPON_COOLDOWN
+	return OS.get_ticks_msec() - last_shot_time > behaviour().weapon_cooldown()
 
 remotesync func drop_manifestation(position):
 	drop_manifestation_internal(position)
@@ -158,6 +154,10 @@ func set_team(team):
 	var color = Color.royalblue if good_team else Color.indianred
 	$sprite.material = $sprite.material.duplicate()
 	$sprite.material.set_shader_param("outline_color", color)
+	
+	var box = StyleBoxFlat.new()
+	box.bg_color = color
+	$Health.add_stylebox_override("fg", box)
 
 remotesync func assume_manifestation(manifestation_name):
 	# TODO: spawn effect showing the change

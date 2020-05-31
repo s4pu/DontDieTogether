@@ -20,6 +20,16 @@ func game_ready():
 	
 	viewport.get_node("GoodBase").get_node("Artefact").connect("game_over", self, "show_game_over", ["evil"])
 	viewport.get_node("EvilBase").get_node("Artefact").connect("game_over", self, "show_game_over", ["good"])
+	
+	set_color_of_base(viewport.get_node("GoodBase"))
+	set_color_of_base(viewport.get_node("EvilBase"))
+	
+func set_color_of_base(base):
+	var color = Color.royalblue if base.get_node("Artefact").good_team else Color.indianred
+	base.get_node("Sprite").material = base.get_node("Sprite").material.duplicate()
+	base.get_node("Sprite").material.set_shader_param("outline_color", color)
+	base.get_node("Artefact").get_node("Sprite").material = base.get_node("Artefact").get_node("Sprite").material.duplicate()
+	base.get_node("Artefact").get_node("Sprite").material.set_shader_param("outline_color", color)
 
 func show_game_over(team):
 	Global.winning_team = team
@@ -93,6 +103,8 @@ func client_note_disconnected():
 func server_player_connected(player_id: int):
 	if player_id != 1:
 		print("Connected ", player_id)
+		rpc_id(player_id, "loading_started")
+		
 		# get our new player informed about all the old players and objects
 		for old_player in get_tree().get_nodes_in_group("players"):
 			rpc_id(player_id, "register_player", old_player.id, old_player.position, old_player.get_sync_state(), old_player.good_team)
@@ -102,6 +114,12 @@ func server_player_connected(player_id: int):
 		# inform all our players (including himself) about the new player
 		var new_player = register_player(player_id, null, {}, next_player_team())
 		rpc("register_player", player_id, new_player.position, new_player.get_sync_state(), new_player.good_team)
+		rpc_id(player_id, "loading_finished")
+
+remotesync func loading_started():
+	$loading_screen.show()
+remotesync func loading_finished():
+	remove_child($loading_screen)
 
 func server_player_disconnected(player_id: int):
 	print("Disconnected ", player_id)
