@@ -23,6 +23,7 @@ func _ready():
 	# pick our team, even though this will be called on all clients, everyone
 	# else's random picks will be overriden by the first sync_state from the master
 	set_team(randf() >= 0.5)
+	assume_manifestation("default")
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
 	#position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
@@ -101,8 +102,8 @@ func can_shoot():
 
 func set_team(team):
 	good_team = team
-	var animal =  Global.ANIMALS["default"][good_team]
-	$sprite.texture = load("res://player/" + animal + ".png")
+	#var animal =  Global.ANIMALS["default"][good_team]
+	#$sprite.texture = load("res://player/" + animal + ".png")
 	var color = Color.indianred if good_team else Color.royalblue
 	$sprite.material.set_shader_param("outline_color", color)
 
