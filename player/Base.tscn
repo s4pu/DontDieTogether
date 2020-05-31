@@ -1,13 +1,20 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://player/player.png" type="Texture" id=1]
 [ext_resource path="res://player/Base.gd" type="Script" id=2]
 [ext_resource path="res://sync/sync.tscn" type="PackedScene" id=3]
 [ext_resource path="res://player/artefact.tscn" type="PackedScene" id=4]
 [ext_resource path="res://player/artefact.gd" type="Script" id=5]
+[ext_resource path="res://shaders/outline.shader" type="Shader" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 320, 320 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 6 )
+shader_param/outline_width = 2.0
+shader_param/outline_color = null
+shader_param/height = 2
 
 [node name="Base" type="Area2D"]
 script = ExtResource( 2 )
@@ -16,6 +23,7 @@ script = ExtResource( 2 )
 shape = SubResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 2 )
 scale = Vector2( 10, 10 )
 texture = ExtResource( 1 )
 
