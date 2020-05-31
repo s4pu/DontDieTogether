@@ -1,8 +1,8 @@
 extends "res://buildings/building.gd"
 
 const spikes_hp = 40
-const spikes_costs = 3
-const spikes_material = "wood"
+const spikes_costs = [3]
+const spikes_material = ["wood"]
 const spikes_damage_on_contact = 5
 
 # Called when the node enters the scene tree for the first time.

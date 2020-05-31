@@ -41,6 +41,10 @@ func _integrate_forces(state: Physics2DDirectBodyState):
 					if body.good_team != good_team:
 						body.rpc("take_damage", damage)
 					rpc("explode")
+				if body.is_in_group("artefact"):
+					if body.good_team != good_team:
+						body.rpc("take_damage", damage)
+					rpc("explode")
 				
 	#elif has_overrides:
 	#	has_overrides = false

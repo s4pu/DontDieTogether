@@ -11,6 +11,15 @@ var speed = 200
 var good_team setget set_team
 var inventory = Global.EMPTY_INVENTORY.duplicate()
 
+const charge_back_speed = 150
+const charge_forward_speed = 1500
+const charge_back_duration = 400	# milliseconds
+const charge_forward_duration = 100	# milliseconds
+const charging_damage = 50
+var charge_start_time
+var charge_direction: Vector2
+var charging_status = 0 	#  0) no charge  1) back   2) forward
+
 var current_manifestation setget set_manifestation
 var last_shot_time = 0
 var last_hit_time = 0
@@ -21,10 +30,7 @@ func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
 	set_process(true)
 	randomize()
-
-	# pick our team, even though this will be called on all clients, everyone
-	# else's random picks will be overriden by the first sync_state from the master
-	set_team(randf() >= 0.5)
+	
 	assume_manifestation("default")
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
@@ -37,7 +43,7 @@ func _ready():
 
 func get_sync_state():
 	# place all synced properties in here
-	var properties = ['color', 'good_team', "hitpoints", "current_manifestation"]
+	var properties = ['color', "hitpoints", "current_manifestation"]
 	
 	var state = {}
 	for p in properties:
@@ -50,52 +56,76 @@ func _process(dt):
 		var old_position = position
 		var collision
 		
-		if Input.is_action_pressed("ui_up"):
-# warning-ignore:return_value_discarded
-			collision = move_and_collide(Vector2(0, -speed * dt))
-			did_move = true
-		if Input.is_action_pressed("ui_down"):
-# warning-ignore:return_value_discarded
-			collision = move_and_collide(Vector2(0, speed * dt))
-			did_move = true
-		if Input.is_action_pressed("ui_left"):
-# warning-ignore:return_value_discarded
-			collision = move_and_collide(Vector2(-speed * dt, 0))
-			did_move = true
-		if Input.is_action_pressed("ui_right"):
-# warning-ignore:return_value_discarded
-			collision = move_and_collide(Vector2(speed * dt, 0))
-			did_move = true
-		if Input.is_action_just_pressed("ui_buildWall"):
-			rpc("spawn_wall", position)
-		if Input.is_action_just_pressed("ui_buildFence"):
-			rpc("spawn_fence", position)
-		if Input.is_action_just_pressed("ui_buildTower"):
-			print("test")
-			rpc("spawn_tower", position)
-		if Input.is_action_just_pressed("ui_buildSpikes"):
-			rpc("spawn_spikes", position)
-		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
-			last_shot_time = OS.get_ticks_msec()
-			var direction = -(position - get_global_mouse_position()).normalized()
-			rpc("spawn_projectile", position, direction, Uuid.v4())
-		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit():
-			last_hit_time = OS.get_ticks_msec()
-			var direction = -(position - get_global_mouse_position()).normalized()
-			rpc("hit", position, direction, Uuid.v4())
-		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
-			if (selected_building.good_team == good_team):
-				selected_building.destroy()
-				selected_building = null
-		if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
-			good_team = not good_team
-		if Input.is_action_just_pressed("free_manifestation"):
-			rpc("drop_manifestation", position)
+		if charging_status == 1:			
+			collision = move_and_collide(- charge_direction * charge_back_speed * dt)		
+			did_move = true	
+			if OS.get_ticks_msec() - charge_start_time > charge_back_duration:
+				charging_status = 2
+		elif charging_status == 2:
+			collision = move_and_collide(charge_direction * charge_forward_speed * dt)		
+			did_move = true	
+			if OS.get_ticks_msec() - charge_start_time > charge_forward_duration + charge_back_duration:
+				charging_status = 0
+		else:		
+			if Input.is_action_pressed("ui_up"):
+	# warning-ignore:return_value_discarded
+				collision = move_and_collide(Vector2(0, -speed * dt))
+				did_move = true
+			if Input.is_action_pressed("ui_down"):
+	# warning-ignore:return_value_discarded
+				collision = move_and_collide(Vector2(0, speed * dt))
+				did_move = true
+			if Input.is_action_pressed("ui_left"):
+	# warning-ignore:return_value_discarded
+				collision = move_and_collide(Vector2(-speed * dt, 0))
+				did_move = true
+			if Input.is_action_pressed("ui_right"):
+	# warning-ignore:return_value_discarded
+				collision = move_and_collide(Vector2(speed * dt, 0))
+				did_move = true
+			if Input.is_action_just_pressed("ui_buildWall"):
+				rpc("spawn_wall", position)
+			if Input.is_action_just_pressed("ui_buildFence"):
+				rpc("spawn_fence", position)
+			if Input.is_action_just_pressed("ui_buildTower"):
+				rpc("spawn_tower", position)
+			if Input.is_action_just_pressed("ui_buildSpikes"):
+				rpc("spawn_spikes", position)
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
+				last_shot_time = OS.get_ticks_msec()
+				var direction = -(position - get_global_mouse_position()).normalized()
+				if behaviour().can_siege():
+					charging_status = 1
+					charge_start_time = OS.get_ticks_msec()
+					charge_direction = direction
+					collision = move_and_collide(- direction * charge_back_speed * dt)
+					did_move = true
+				else:
+					rpc("spawn_projectile", position, direction, Uuid.v4())
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit():
+				last_hit_time = OS.get_ticks_msec()
+				var direction = -(position - get_global_mouse_position()).normalized()
+				rpc("hit", position, direction, Uuid.v4())
+			if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
+				if (selected_building.good_team == good_team):
+					selected_building.destroy()
+					selected_building = null
+			if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
+				good_team = not good_team
+			if Input.is_action_just_pressed("free_manifestation"):
+				rpc("drop_manifestation", position)
 		
 		if did_move:
 			rset("position", position)
-			if collision and collision.get_collider().is_in_group("buildings"):
-				take_damage(collision.get_collider().damage_on_contact)
+			if collision:
+				var collider = collision.get_collider()
+				if collider.is_in_group("buildings"):
+					if charging_status == 2:
+						if collider.good_team != good_team:
+							collider.rpc("take_damage", charging_damage)
+						charging_status = 0
+					else:
+						take_damage(collision.get_collider().damage_on_contact)
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
@@ -118,7 +148,8 @@ remotesync func drop_manifestation(position):
 
 func set_team(team):
 	good_team = team
-	var color = Color.indianred if good_team else Color.royalblue
+	var color = Color.royalblue if good_team else Color.indianred
+	$sprite.material = $sprite.material.duplicate()
 	$sprite.material.set_shader_param("outline_color", color)
 
 remotesync func assume_manifestation(manifestation_name):
@@ -195,7 +226,9 @@ remotesync func spawn_fence(position):
 		spawn_building(building, position)
 
 remotesync func spawn_tower(position):
-	var building = preload("res://buildings/tower.tscn").instance()
+	if behaviour().can_build():
+		var building = preload("res://buildings/tower.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_spikes(position):
 	if behaviour().can_build():
@@ -204,11 +237,29 @@ remotesync func spawn_spikes(position):
 
 remotesync func take_damage(points):
 	hitpoints -= points
-	emit_signal("health_changed", hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"])
+	var percentage = hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"]
+	emit_signal("health_changed", percentage)
+	
+	$Health.value = percentage
 	
 	if hitpoints <= 0:
-		hide()
-		rset("dead", true)
+		die()
+
+func die():
+	hide()
+	dead = true
+	position = Vector2(-8000, -8000)
+	hitpoints = null
+	$Health.value = 1
+	assume_manifestation("default")
+	if is_network_master():
+		yield(get_tree().create_timer(6), "timeout")
+		rpc("respawn")
+
+remotesync func respawn():
+	position = get_base().position
+	dead = false
+	show()
 
 func behaviour():
 	return Global.ANIMALS[current_manifestation]["behaviour"].new()
@@ -228,7 +279,7 @@ func collect(collectable):
 
 func update_inventory():
 	if is_network_master() && behaviour().can_collect():
-		$"../../../Inventory".update_inventory(inventory)
+		$"../../../../../Inventory".update_inventory(inventory)
 
 func clear_inventory():
 	if is_network_master() && behaviour().can_collect():

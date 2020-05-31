@@ -3,6 +3,50 @@ extends Node2D
 var port = 8899
 var ip = '127.0.0.1'
 var max_players = 200
+var manifestations_menu
+
+# put game-specific (non network) init things here
+func game_ready():
+
+	var viewport = $color_tint_container/viewport/shadow_casters_container/viewport
+# warning-ignore:return_value_discarded
+	viewport.get_node("GoodBase").connect("base_entered", self, "show_manifestations")
+# warning-ignore:return_value_discarded
+	viewport.get_node("GoodBase").connect("base_exited", self, "hide_manifestations")
+# warning-ignore:return_value_discarded
+	viewport.get_node("EvilBase").connect("base_entered", self, "show_manifestations")
+# warning-ignore:return_value_discarded
+	viewport.get_node("EvilBase").connect("base_exited", self, "hide_manifestations")
+
+func show_manifestations():
+	if not manifestations_menu:
+		manifestations_menu = preload("res://UI/manifestation_selection.tscn").instance()
+		manifestations_menu.name = 'manifestation_selection'
+		manifestations_menu.connect("manifestation_selected", self, "manifestation_selected")
+		add_child(manifestations_menu)
+func manifestation_selected(name):
+	my_player().rpc("assume_manifestation", name)
+func hide_manifestations():
+	if manifestations_menu:
+		manifestations_menu.queue_free()
+		manifestations_menu = null
+
+func my_player():
+	for player in get_tree().get_nodes_in_group("players"):
+		if player.is_network_master():
+			return player
+	return null
+
+func next_player_team():
+	var players = get_tree().get_nodes_in_group("players")
+	var count_good = 0
+	var count_evil = 0
+	for player in players:
+		if player.good_team:
+			count_good += 1
+		else:
+			count_evil += 1
+	return count_good <= count_evil
 
 func _ready():
 	var peer = NetworkedMultiplayerENet.new()
@@ -24,12 +68,14 @@ func _ready():
 		if get_tree().connect("network_peer_disconnected", self, "server_player_disconnected") != OK:
 			print("An error occured while trying to connec the network peer disconnected signal")
 		
-		$shadow_casters_container/viewport/Level.spawn()
+		$color_tint_container/viewport/shadow_casters_container/viewport/Level.spawn()
 	
 	get_tree().set_network_peer(peer)
 	
+	game_ready()
+	
 	if not is_dedicated and not is_client:
-		register_player(1, null, {})
+		register_player(1, null, {}, next_player_team())
 
 func client_note_disconnected():
 	print("Server disconnected from player, exiting ...")
@@ -40,13 +86,13 @@ func server_player_connected(player_id: int):
 		print("Connected ", player_id)
 		# get our new player informed about all the old players and objects
 		for old_player in get_tree().get_nodes_in_group("players"):
-			rpc_id(player_id, "register_player", old_player.id, old_player.position, old_player.get_sync_state())
+			rpc_id(player_id, "register_player", old_player.id, old_player.position, old_player.get_sync_state(), old_player.good_team)
 		for node in get_tree().get_nodes_in_group("synced"):
 			rpc_id(player_id, "spawn_object", node.name, node.filename, node.get_path(), node.position, node.get_node("sync").get_sync_state())
 		
-		# inform all our players about the new player
-		var new_player = register_player(player_id, null, {})
-		rpc("register_player", player_id, new_player.position, new_player.get_sync_state())
+		# inform all our players (including himself) about the new player
+		var new_player = register_player(player_id, null, {}, next_player_team())
+		rpc("register_player", player_id, new_player.position, new_player.get_sync_state(), new_player.good_team)
 
 func server_player_disconnected(player_id: int):
 	print("Disconnected ", player_id)
@@ -74,14 +120,15 @@ remote func spawn_object(name: String, filename: String, path: NodePath, positio
 	
 	return object
 
-remote func register_player(player_id: int, position, state: Dictionary):
+remote func register_player(player_id: int, position, state: Dictionary, good_team: bool):
 	var player: Node2D = preload("res://player/player.tscn").instance()
 	player.id = player_id
+	player.good_team = good_team
 	player.set_network_master(player.id)
 	player.name = String(player.id)
 	player.add_to_group("players")
 	
-	$shadow_casters_container/viewport.add_child(player)
+	$color_tint_container/viewport/shadow_casters_container/viewport.add_child(player)
 	
 	if position:
 		player.position = position
