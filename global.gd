@@ -22,24 +22,28 @@ var ANIMALS = {
 		false: "chicken",
 		"hitpoints": 100,
 		"speed": 150,
+		"behaviour": CookBehaviour,
 	},
 	"fighter": {
 		true: "wolf",
 		false: "crocodile",
 		"hitpoints": 150,
 		"speed": 200,
+		"behaviour": FighterBehaviour,
 	},
 	"healer": {
 		true: "bunny",
 		false: "snake",
 		"hitpoints": 60,
 		"speed": 150,
+		"behaviour": HealerBehaviour,
 	},
 	"siege": {
 		true: "ram",
 		false: "rhino",
 		"hitpoints": 100,
 		"speed": 150,
+		"behaviour": SiegeBehaviour,
 	},
 	"collector": {
 		true: "pig",
@@ -55,12 +59,12 @@ var ANIMALS = {
 		"speed": 150,
 		"behaviour": BuildingBehaviour,
 	},
-	"ranged": {
-		true: "",
-		false: "",
-		"hitpoints": 100,
-		"speed": 150,
-	}
+	#"ranged": {
+	#	true: "",
+	#	false: "",
+	#	"hitpoints": 100,
+	#	"speed": 150,
+	#}
 }
 
 class AnimalBehaviour:
@@ -83,6 +87,22 @@ class BuildingBehaviour extends AnimalBehaviour:
 	func can_build():
 		return true
 
+class SiegeBehaviour extends AnimalBehaviour:
+	func can_siege():
+		return true
+
 class CollectingBehaviour extends AnimalBehaviour:
 	func can_collect():
+		return true
+
+class CookBehaviour extends AnimalBehaviour:
+	func can_cook():
+		return true
+
+class FighterBehaviour extends AnimalBehaviour:
+	func can_melee_fight():
+		return true
+
+class HealerBehaviour extends AnimalBehaviour:
+	func can_heal():
 		return true
