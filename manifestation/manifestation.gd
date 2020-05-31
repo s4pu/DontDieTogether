@@ -6,7 +6,7 @@ var dropped_by: int
 func _ready():
 	pass
 
-func _process(delta):
+func _process(_delta):
 	$sprite.position.y = -20 + sin(OS.get_system_time_msecs() * 0.003) * 8
 
 func _on_manifestation_body_entered(body):

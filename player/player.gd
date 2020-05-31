@@ -67,7 +67,6 @@ func _process(dt):
 		if Input.is_action_just_pressed("ui_buildFence"):
 			rpc("spawn_fence", position)
 		if Input.is_action_just_pressed("ui_buildTower"):
-			print("test")
 			rpc("spawn_tower", position)
 		if Input.is_action_just_pressed("ui_buildSpikes"):
 			rpc("spawn_spikes", position)
@@ -174,7 +173,9 @@ remotesync func spawn_fence(position):
 		spawn_building(building, position)
 
 remotesync func spawn_tower(position):
-	var building = preload("res://buildings/tower.tscn").instance()
+	if behaviour().can_build():
+		var building = preload("res://buildings/tower.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_spikes(position):
 	if behaviour().can_build():
