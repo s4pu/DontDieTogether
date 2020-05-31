@@ -6,6 +6,5 @@ extends Node2D
 # var b = "text"
 var team
 
-func end_game(team):
-	$Camera2D.current = true
-	$RichTextLabel.text = "Team " + team + " won"
+func _ready():
+	$RichTextLabel.text = "Team " + Global.winning_team + " won"
