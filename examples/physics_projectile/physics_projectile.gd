@@ -7,12 +7,6 @@ var player_damage: int
 var building_damage: int
 var good_team: bool
 
-#puppet var override_position: Vector2
-#puppet var override_rotation: float
-#puppet var override_angular_velocity: float
-#puppet var override_linear_velocity: Vector2
-#puppet var has_overrides = false
-
 func _ready():
 	# spawn outside our owner
 	position = position + direction * 50
@@ -51,4 +45,5 @@ remotesync func explode():
 	queue_free()
 
 func _on_Timer_timeout():
-	rpc("kill")
+	if is_network_master():
+		rpc("kill")

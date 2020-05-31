@@ -13,7 +13,7 @@ func _on_Area2D_body_entered(body):
 		body.collect(self)
 		rpc("die")
 	
-	if body.is_in_group("projectiles"):
+	if body.is_in_group("projectiles") and body.is_network_master():
 		body.rpc("explode")
 
 func set_texture(path):
