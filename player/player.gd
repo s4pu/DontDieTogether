@@ -249,8 +249,12 @@ remotesync func spawn_spikes(position):
 		spawn_building(building, position)
 
 remotesync func take_damage(points):
+	var max_hitpoints = Global.ANIMALS[current_manifestation]["hitpoints"]
 	hitpoints -= points
-	var percentage = hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"]
+	if hitpoints > max_hitpoints:
+		hitpoints = max_hitpoints
+	
+	var percentage = hitpoints / max_hitpoints
 	emit_signal("health_changed", percentage)
 	
 	$Health.value = percentage
