@@ -23,7 +23,7 @@ var charging_status = 0 	#  0) no charge  1) back   2) forward
 var current_manifestation setget set_manifestation
 var last_shot_time = 0
 var last_hit_time = 0
-remotesync var hitpoints
+remotesync var hitpoints setget set_hitpoints
 remotesync var dead = false
 
 func _ready():
@@ -128,7 +128,7 @@ func _process(dt):
 						building_collide(collision)
 						charging_status = 0
 					else:
-						take_damage(collision.get_collider().damage_on_contact)
+						rpc("take_damage", collision.get_collider().damage_on_contact)
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
@@ -159,12 +159,16 @@ remotesync func assume_manifestation(manifestation_name):
 	# TODO: spawn effect showing the change
 	set_manifestation(manifestation_name)
 
+func set_hitpoints(num):
+	hitpoints = num
+	$Health.value = 1 if num == null or current_manifestation == null else num / Global.ANIMALS[current_manifestation]['hitpoints']
+
 func set_manifestation(name):
 	var manifestation = Global.ANIMALS[name]
 	var health_percentage = hitpoints / manifestation["hitpoints"] if hitpoints != null else 1
 	
 	$sprite.texture = load("res://player/" + manifestation[good_team] + ".png")
-	hitpoints = ceil(manifestation["hitpoints"] * health_percentage)
+	set_hitpoints(ceil(manifestation["hitpoints"] * health_percentage))
 	speed = manifestation["speed"]
 	current_manifestation = name
 	get_player_inventory().set_visibility(behaviour().can_collect())
@@ -249,11 +253,13 @@ remotesync func spawn_spikes(position):
 		spawn_building(building, position)
 
 remotesync func take_damage(points):
-	hitpoints -= points
-	var percentage = hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"]
-	emit_signal("health_changed", percentage)
+	var max_hitpoints = Global.ANIMALS[current_manifestation]["hitpoints"]
+	set_hitpoints(hitpoints - points)
+	if hitpoints > max_hitpoints:
+		set_hitpoints(max_hitpoints)
 	
-	$Health.value = percentage
+	var percentage = hitpoints / max_hitpoints
+	emit_signal("health_changed", percentage)
 	
 	if hitpoints <= 0:
 		die()
@@ -262,9 +268,10 @@ func die():
 	hide()
 	dead = true
 	position = Vector2(-8000, -8000)
-	hitpoints = null
+	set_hitpoints(null)
 	$Health.value = 1
 	assume_manifestation("default")
+	
 	if is_network_master():
 		yield(get_tree().create_timer(6), "timeout")
 		rpc("respawn")

@@ -52,9 +52,10 @@ func _ready():
 	var peer = NetworkedMultiplayerENet.new()
 	var is_client = "--client" in OS.get_cmdline_args()
 	var is_dedicated = "--dedicated" in OS.get_cmdline_args()
+	var host = 'g.tmbe.me' if '-t' in OS.get_cmdline_args() else ip
 	
 	if is_client:
-		peer.create_client(ip, port)
+		peer.create_client(host, port)
 		if get_tree().connect("server_disconnected", self, "client_note_disconnected") != OK:
 			print("An eror occured while trying to connect the server disconnected signal")
 	else:
