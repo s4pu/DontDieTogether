@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/manifestation_selection.gd" type="Script" id=1]
+
+[node name="manifestation_selection" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="row" type="HBoxContainer" parent="."]
+margin_left = 68.7351
+margin_top = 722.287
+margin_right = 108.735
+margin_bottom = 762.287
+__meta__ = {
+"_edit_use_anchors_": false
+}

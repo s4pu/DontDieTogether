@@ -16,3 +16,4 @@ shape = SubResource( 1 )
 scale = Vector2( 10, 10 )
 texture = ExtResource( 1 )
 [connection signal="body_entered" from="." to="." method="_on_Base_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_Base_body_exited"]
