@@ -116,8 +116,7 @@ func _process(dt):
 				var collider = collision.get_collider()
 				if collider.is_in_group("buildings"):
 					if charging_status == 2:
-						if collider.good_team != good_team:
-							collider.rpc("take_damage", charging_damage)
+						building_collide(collision)
 						charging_status = 0
 					else:
 						take_damage(collision.get_collider().damage_on_contact)
@@ -284,3 +283,12 @@ func base_inventory_has_needed_materials(materials, costs):
 			else:
 				has_enough_material = false
 	return has_enough_material
+	
+func building_collide(collision: KinematicCollision2D):
+	var building = collision.get_collider()
+	if building.good_team != good_team:
+		building.rpc("take_damage", charging_damage)
+	var particles = preload("res://buildings/Collision_Particle.tscn").instance()
+	particles.position = collision.position
+	particles.get_node("Particles2D").emitting = true
+	get_parent().add_child(particles)
