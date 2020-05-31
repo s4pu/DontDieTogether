@@ -20,6 +20,16 @@ func game_ready():
 	
 	viewport.get_node("GoodBase").get_node("Artefact").connect("game_over", self, "show_game_over", ["evil"])
 	viewport.get_node("EvilBase").get_node("Artefact").connect("game_over", self, "show_game_over", ["good"])
+	
+	set_color_of_base(viewport.get_node("GoodBase"))
+	set_color_of_base(viewport.get_node("EvilBase"))
+	
+func set_color_of_base(base):
+	var color = Color.royalblue if base.get_node("Artefact").good_team else Color.indianred
+	base.get_node("Sprite").material = base.get_node("Sprite").material.duplicate()
+	base.get_node("Sprite").material.set_shader_param("outline_color", color)
+	base.get_node("Artefact").get_node("Sprite").material = base.get_node("Artefact").get_node("Sprite").material.duplicate()
+	base.get_node("Artefact").get_node("Sprite").material.set_shader_param("outline_color", color)
 
 func show_game_over(team):
 	Global.winning_team = team
