@@ -114,6 +114,7 @@ remotesync func assume_manifestation(manifestation_name):
 	$sprite.texture = load("res://player/" + manifestation[good_team] + ".png")
 	hitpoints = ceil(manifestation["hitpoints"] * health_percentage)
 	speed = manifestation["speed"]
+	current_manifestation = manifestation_name
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
