@@ -265,8 +265,14 @@ remotesync func take_damage(points):
 		die()
 
 func die():
+	var particles = preload("res://player/Dying_Particle.tscn").instance()
+	particles.position = position
+	particles.get_node("Particles2D").emitting = true
+	get_parent().add_child(particles)
 	hide()
+	
 	dead = true
+	yield(get_tree().create_timer(1), "timeout")
 	position = Vector2(-8000, -8000)
 	set_hitpoints(null)
 	$Health.value = 1
