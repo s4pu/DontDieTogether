@@ -12,6 +12,9 @@ func _on_Area2D_body_entered(body):
 	  and body.behaviour().can_collect():
 		body.collect(self)
 		rpc("die")
+	
+	if body.is_in_group("projectiles"):
+		body.rpc("explode")
 
 func set_texture(path):
 	texture = path

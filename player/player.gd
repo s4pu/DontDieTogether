@@ -29,10 +29,7 @@ func _ready():
 	rset_config("position", MultiplayerAPI.RPC_MODE_REMOTE)
 	set_process(true)
 	randomize()
-
-	# pick our team, even though this will be called on all clients, everyone
-	# else's random picks will be overriden by the first sync_state from the master
-	set_team(randf() >= 0.5)
+	
 	assume_manifestation("default")
 	
 	position = $"../GoodBase".position if good_team else $"../EvilBase".position
@@ -45,7 +42,7 @@ func _ready():
 
 func get_sync_state():
 	# place all synced properties in here
-	var properties = ['color', 'good_team', "hitpoints", "current_manifestation"]
+	var properties = ['color', "hitpoints", "current_manifestation"]
 	
 	var state = {}
 	for p in properties:
@@ -90,7 +87,6 @@ func _process(dt):
 			if Input.is_action_just_pressed("ui_buildFence"):
 				rpc("spawn_fence", position)
 			if Input.is_action_just_pressed("ui_buildTower"):
-				print("test")
 				rpc("spawn_tower", position)
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
@@ -143,7 +139,8 @@ remotesync func drop_manifestation(position):
 
 func set_team(team):
 	good_team = team
-	var color = Color.indianred if good_team else Color.royalblue
+	var color = Color.royalblue if good_team else Color.indianred
+	$sprite.material = $sprite.material.duplicate()
 	$sprite.material.set_shader_param("outline_color", color)
 
 remotesync func assume_manifestation(manifestation_name):
@@ -210,7 +207,9 @@ remotesync func spawn_fence(position):
 		spawn_building(building, position)
 
 remotesync func spawn_tower(position):
-	var building = preload("res://buildings/tower.tscn").instance()
+	if behaviour().can_build():
+		var building = preload("res://buildings/tower.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_spikes(position):
 	if behaviour().can_build():
@@ -219,11 +218,29 @@ remotesync func spawn_spikes(position):
 
 remotesync func take_damage(points):
 	hitpoints -= points
-	emit_signal("health_changed", hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"])
+	var percentage = hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"]
+	emit_signal("health_changed", percentage)
+	
+	$Health.value = percentage
 	
 	if hitpoints <= 0:
-		hide()
-		rset("dead", true)
+		die()
+
+func die():
+	hide()
+	dead = true
+	position = Vector2(-8000, -8000)
+	hitpoints = null
+	$Health.value = 1
+	assume_manifestation("default")
+	if is_network_master():
+		yield(get_tree().create_timer(6), "timeout")
+		rpc("respawn")
+
+remotesync func respawn():
+	position = get_base().position
+	dead = false
+	show()
 
 func behaviour():
 	return Global.ANIMALS[current_manifestation]["behaviour"].new()
@@ -243,7 +260,7 @@ func collect(collectable):
 
 func update_inventory():
 	if is_network_master() && behaviour().can_collect():
-		$"../../../Inventory".update_inventory(inventory)
+		$"../../../../../Inventory".update_inventory(inventory)
 
 func clear_inventory():
 	if is_network_master() && behaviour().can_collect():

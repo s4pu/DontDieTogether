@@ -6,7 +6,7 @@ var good_team
 var hp = 50
 var damage_on_contact = 0
 var costs = 0
-var needed_material = ""
+var needed_material = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,7 +27,6 @@ remotesync func take_damage(damage):
 
 func _on_Area2D_mouse_entered():
 	emit_signal("select_building", $".")
-
 
 func _on_Area2D_mouse_exited():
 	emit_signal("deselect_building")
