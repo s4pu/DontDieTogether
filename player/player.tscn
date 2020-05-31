@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/sloth.png" type="Texture" id=2]
@@ -20,6 +20,9 @@
 [ext_resource path="res://audio/arrow_woosh_2.wav" type="AudioStream" id=18]
 [ext_resource path="res://audio/arrow_woosh_4.wav" type="AudioStream" id=19]
 [ext_resource path="res://audio/arrow_woosh_3.wav" type="AudioStream" id=20]
+[ext_resource path="res://audio/impact_player_2.wav" type="AudioStream" id=21]
+[ext_resource path="res://audio/impact_player_1.wav" type="AudioStream" id=22]
+[ext_resource path="res://audio/impact_player_3.wav" type="AudioStream" id=23]
 
 [sub_resource type="ParticlesMaterial" id=1]
 flag_disable_z = true
@@ -147,3 +150,18 @@ volume_db = -4.16
 [node name="arrow_woosh_4" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
 stream = ExtResource( 19 )
 volume_db = -4.16
+
+[node name="impacts" type="Node" parent="sounds"]
+script = ExtResource( 15 )
+
+[node name="impact_1" type="AudioStreamPlayer" parent="sounds/impacts"]
+stream = ExtResource( 22 )
+volume_db = -7.488
+
+[node name="impact_2" type="AudioStreamPlayer" parent="sounds/impacts"]
+stream = ExtResource( 21 )
+volume_db = -7.488
+
+[node name="impact_3" type="AudioStreamPlayer" parent="sounds/impacts"]
+stream = ExtResource( 23 )
+volume_db = -7.488

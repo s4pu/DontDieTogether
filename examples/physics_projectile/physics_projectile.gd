@@ -27,14 +27,17 @@ func _integrate_forces(state: Physics2DDirectBodyState):
 					if (body.good_team != good_team and player_damage > 0)\
 					  or (body.good_team == good_team and player_damage < 0):
 						body.rpc("take_damage", player_damage)
+						body.get_node("sounds/impacts").rpc("play_random")
 					rpc("explode")
 				if body.is_in_group("buildings"):
 					if body.good_team != good_team:
 						body.rpc("take_damage", building_damage)
+						body.get_node("impact_sounds").rpc("play_random")
 					rpc("explode")
 				if body.is_in_group("artefact"):
 					if body.good_team != good_team:
 						body.rpc("take_damage", building_damage)
+						body.get_node("impact_sounds").rpc("play_random")
 					rpc("explode")
 
 remotesync func explode():

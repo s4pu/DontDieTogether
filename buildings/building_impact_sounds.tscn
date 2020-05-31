@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://audio/impact_building_2.wav" type="AudioStream" id=1]
+[ext_resource path="res://audio/impact_building_3.wav" type="AudioStream" id=2]
+[ext_resource path="res://audio/impact_building_4.wav" type="AudioStream" id=3]
+[ext_resource path="res://audio/impact_building_1.wav" type="AudioStream" id=4]
+[ext_resource path="res://player/random_audio_player.gd" type="Script" id=5]
+
+[node name="impact_sounds" type="Node"]
+script = ExtResource( 5 )
+
+[node name="impact_1" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+volume_db = -11.648
+
+[node name="impact_2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+volume_db = -11.648
+
+[node name="impact_3" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+volume_db = -11.648
+
+[node name="impact_4" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = -11.648
