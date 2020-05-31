@@ -29,7 +29,7 @@ script = ExtResource( 1 )
 offset = Vector2( 1050, 50 )
 transform = Transform2D( 1, 0, 0, 1, 1050, 50 )
 
-[node name="Inventary" parent="." instance=ExtResource( 4 )]
+[node name="Inventory" parent="." instance=ExtResource( 4 )]
 
 [node name="shadow_casters_container" type="ViewportContainer" parent="."]
 material = SubResource( 1 )
@@ -58,7 +58,7 @@ good_team = true
 
 [node name="manifestation" parent="shadow_casters_container/viewport" instance=ExtResource( 10 )]
 position = Vector2( 935.042, 270.768 )
-manifestation_name = "fighter"
+manifestation_name = "collector"
 
 [node name="RigidBody2D" type="RigidBody2D" parent="shadow_casters_container/viewport"]
 position = Vector2( 220.99, 136.671 )

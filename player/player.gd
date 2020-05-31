@@ -8,7 +8,7 @@ var selected_building
 var previous_buildings_position = Vector2(0,0)
 var speed = 200
 var good_team setget set_team
-var inventary = Global.EMPTY_INVENTORY.duplicate()
+var inventory = Global.EMPTY_INVENTORY.duplicate()
 
 var current_manifestation = "default"
 var last_shot_time = 0
@@ -136,8 +136,10 @@ func get_position_after_building(me, building):
 
 func spawn_building(building, position):
 	building._ready()
-	if inventary.has(building.needed_material) && inventary[building.needed_material] >= building.costs:
-		decrease_inventary(building.needed_material, building.costs)
+	if behaviour().can_build() &&\
+	  inventory.has(building.needed_material) &&\
+	  inventory[building.needed_material] >= building.costs:
+		decrease_inventory(building.needed_material, building.costs)
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
 		self.position = get_position_after_building(position, building.position)
@@ -147,16 +149,19 @@ func spawn_building(building, position):
 		building.connect("deselect_building", self, "deselect_building")
 	
 remotesync func spawn_wall(position):
-	var building = preload("res://buildings/wall.tscn").instance()
-	spawn_building(building, position)
+	if behaviour().can_build():
+		var building = preload("res://buildings/wall.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_fence(position):
-	var building = preload("res://buildings/fence.tscn").instance()
-	spawn_building(building, position)
+	if behaviour().can_build():
+		var building = preload("res://buildings/fence.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func spawn_spikes(position):
-	var building = preload("res://buildings/spikes.tscn").instance()
-	spawn_building(building, position)
+	if behaviour().can_build():
+		var building = preload("res://buildings/spikes.tscn").instance()
+		spawn_building(building, position)
 
 remotesync func take_damage(points):
 	hitpoints -= points
@@ -166,27 +171,34 @@ remotesync func take_damage(points):
 		hide()
 		rset("dead", true)
 
+func behaviour():
+	var x = Global.ANIMALS[current_manifestation]["behaviour"].new()
+	print(current_manifestation)
+	return x
+
 func select_building(building):
-	selected_building = building
+	if behaviour().can_build():
+		selected_building = building
 	
 func deselect_building():
-	selected_building = null
+	if behaviour().can_build():
+		selected_building = null
 
 func collect(collectable):
-	if not inventary.has(collectable.item_name):
-		inventary[collectable.item_name] = 1
-	else:
-		inventary[collectable.item_name] += 1
-	update_inventary()
+	if behaviour().can_collect():
+		inventory[collectable.item_name] += 1
+		update_inventory()
 
-func update_inventary():
-	if is_network_master():
-		$"../../../Inventary".update_inventary(inventary)
+func update_inventory():
+	if is_network_master() && behaviour().can_collect():
+		$"../../../Inventory".update_inventory(inventory)
 
 func clear_inventory():
-	inventary = Global.EMPTY_INVENTORY.duplicate()
-	update_inventary()
+	if is_network_master() && behaviour().can_collect():
+		inventory = Global.EMPTY_INVENTORY.duplicate()
+		update_inventory()
 
-func decrease_inventary(material, costs):
-	inventary[material] = inventary[material] - costs
-	update_inventary()
+func decrease_inventory(material, costs):
+	if is_network_master() && behaviour().can_collect():
+		inventory[material] = inventory[material] - costs
+		update_inventory()

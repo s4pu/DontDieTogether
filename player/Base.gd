@@ -1,7 +1,7 @@
 extends Area2D
 
 export (bool) var good_team
-var inventary = Global.EMPTY_INVENTORY.duplicate()
+var inventory = Global.EMPTY_INVENTORY.duplicate()
 
 func _ready():
 	var padding = Vector2(300, 300)
@@ -11,9 +11,9 @@ func _on_Base_body_entered(body):
 	if body.is_in_group("players") && \
 		  body.is_network_master() && \
 		  body.good_team == good_team:
-		unload_inventary(body.inventary)
+		unload_inventory(body.inventory)
 		body.clear_inventory()
 		
-func unload_inventary(player_inventary):
+func unload_inventory(player_inventory):
 	for item in Global.RESOURCES:
-		inventary[item] += player_inventary[item]
+		inventory[item] += player_inventory[item]
