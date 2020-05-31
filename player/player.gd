@@ -16,7 +16,6 @@ const charge_forward_speed = 900
 const charge_back_duration = 350	# milliseconds
 const charge_forward_duration = 250	# milliseconds
 const charging_damage = 50
-const charging_cooldown = 500 # milliseconds
 
 var last_charge_time = 0
 var charge_start_time
@@ -96,7 +95,7 @@ func _process(dt):
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and behaviour().can_siege():
-				if OS.get_ticks_msec() - last_charge_time > charging_cooldown:
+				if OS.get_ticks_msec() - last_charge_time > behaviour().weapon_cooldown():
 					var direction = -(position - get_global_mouse_position()).normalized()
 					charging_status = 1
 					charge_start_time = OS.get_ticks_msec()

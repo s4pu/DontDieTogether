@@ -119,7 +119,7 @@ class SiegeBehaviour extends AnimalBehaviour:
 	func can_siege():
 		return true
 	func can_shoot():
-		return true
+		return false
 	func weapon_cooldown():
 		return 2600
 
