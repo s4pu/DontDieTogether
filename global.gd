@@ -1,5 +1,8 @@
 extends Node
 
+# remember what team won before we change to the gameover scene
+var winning_team = null
+
 const MAP_SIZE = 6000
 const RESOURCES = ["wood", "food", "mushroom", "stone"]
 const EMPTY_INVENTORY = {
