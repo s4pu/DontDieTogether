@@ -131,6 +131,7 @@ func _process(dt):
 					if charging_status == 2:
 						building_collide(collision)
 						charging_status = 0
+						last_charge_time = OS.get_ticks_msec()
 					else:
 						rpc("take_damage", collision.get_collider().damage_on_contact)
 						
