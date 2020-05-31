@@ -3,6 +3,33 @@ extends Node2D
 var port = 8899
 var ip = '127.0.0.1'
 var max_players = 200
+var manifestations_menu
+
+# put game-specific (non network) init things here
+func game_ready():
+	$shadow_casters_container/viewport/GoodBase.connect("base_entered", self, "show_manifestations")
+	$shadow_casters_container/viewport/GoodBase.connect("base_exited", self, "hide_manifestations")
+	$shadow_casters_container/viewport/EvilBase.connect("base_entered", self, "show_manifestations")
+	$shadow_casters_container/viewport/EvilBase.connect("base_exited", self, "hide_manifestations")
+
+func show_manifestations():
+	if not manifestations_menu:
+		manifestations_menu = preload("res://UI/manifestation_selection.tscn").instance()
+		manifestations_menu.name = 'manifestation_selection'
+		manifestations_menu.connect("manifestation_selected", self, "manifestation_selected")
+		add_child(manifestations_menu)
+func manifestation_selected(name):
+	my_player().rpc("assume_manifestation", name)
+func hide_manifestations():
+	if manifestations_menu:
+		manifestations_menu.queue_free()
+		manifestations_menu = null
+
+func my_player():
+	for player in get_tree().get_nodes_in_group("players"):
+		if player.is_network_master():
+			return player
+	return null
 
 func _ready():
 	var peer = NetworkedMultiplayerENet.new()
@@ -28,6 +55,9 @@ func _ready():
 	
 	get_tree().set_network_peer(peer)
 	
+	game_ready()
+	
+	var players = get_tree().get_nodes_in_group("players")
 	if not is_dedicated and not is_client:
 		register_player(1, null, {})
 
@@ -44,7 +74,7 @@ func server_player_connected(player_id: int):
 		for node in get_tree().get_nodes_in_group("synced"):
 			rpc_id(player_id, "spawn_object", node.name, node.filename, node.get_path(), node.position, node.get_node("sync").get_sync_state())
 		
-		# inform all our players about the new player
+		# inform all our players (including himself) about the new player
 		var new_player = register_player(player_id, null, {})
 		rpc("register_player", player_id, new_player.position, new_player.get_sync_state())
 
