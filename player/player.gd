@@ -180,8 +180,8 @@ func set_manifestation(name):
 	set_hitpoints(ceil(manifestation["hitpoints"] * health_percentage))
 	speed = manifestation["speed"]
 	current_manifestation = name
-	set_inventory_visibility()
-	get_building_menu().set_visibility(behaviour().can_build())
+	if is_network_master():
+		set_inventory_visibility()
 	
 	emit_signal("manifestation_changed", name)
 
@@ -192,6 +192,7 @@ func set_inventory_visibility():
 	var cook = behaviour().can_cook()
 	get_player_inventory().set_visibility(collector, collector, collector)
 	get_base_inventory().set_visibility(builder, healer, cook)
+	get_building_menu().set_visibility(builder)
 
 func get_player_inventory():
 	return $"../../../../../Player_Inventory"
