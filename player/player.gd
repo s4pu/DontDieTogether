@@ -171,8 +171,9 @@ func set_manifestation(name):
 	set_hitpoints(ceil(manifestation["hitpoints"] * health_percentage))
 	speed = manifestation["speed"]
 	current_manifestation = name
-	#get_player_inventory().set_visibility(behaviour().can_collect())
-	#get_base_inventory().set_visibility(behaviour().can_build())
+	get_player_inventory().set_visibility(behaviour().can_collect())
+	get_base_inventory().set_visibility(behaviour().can_build())
+	get_building_menu().set_visibility(behaviour().can_build())
 	set_inventory_visibility()
 	
 	emit_signal("manifestation_changed", name)
@@ -190,6 +191,9 @@ func get_player_inventory():
 	
 func get_base_inventory():
 	return $"../../../../../Base_Inventory"
+
+func get_building_menu():
+	return $"../../../../../buildingSelection"
 
 remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
