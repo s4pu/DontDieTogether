@@ -37,5 +37,9 @@ func spawn_collectable(name, position):
 	collectable.position = position
 	collectable.item_name = name
 	collectable.set_texture(elements[name][randi() % elements[name].size()])
+	if name == "wood":
+		# trees should get a bit more shadow
+		var sprite = collectable.get_node("Area2D/Sprite")
+		sprite.material = sprite.material.duplicate()
+		sprite.material.set_shader_param("height", 2)
 	add_child(collectable)
-
