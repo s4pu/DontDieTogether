@@ -91,6 +91,7 @@ autoplay = true
 
 [node name="night" type="AudioStreamPlayer" parent="time_of_day"]
 stream = ExtResource( 13 )
+autoplay = true
 
 [node name="loading_screen" type="ColorRect" parent="."]
 visible = false
