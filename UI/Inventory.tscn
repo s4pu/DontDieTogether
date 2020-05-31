@@ -3,7 +3,6 @@
 [ext_resource path="res://UI/Inventory.gd" type="Script" id=1]
 [ext_resource path="res://collectables/icon_wood.png" type="Texture" id=2]
 
-
 [sub_resource type="StreamTexture" id=1]
 flags = 4
 load_path = "res://.import/icon_stone.png-1a1929b1ee8c73f77927bcdd755371b1.stex"
