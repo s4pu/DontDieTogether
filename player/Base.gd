@@ -12,7 +12,7 @@ signal base_entered
 signal base_exited
 
 func _ready():
-	var padding = Vector2(300, 300)
+	var padding = Vector2(320, 320)
 	position = padding if good_team else Vector2(Global.MAP_SIZE, Global.MAP_SIZE) - padding
 	get_child(3).good_team = good_team
 
