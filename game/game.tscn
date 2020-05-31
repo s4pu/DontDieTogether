@@ -7,7 +7,7 @@
 [ext_resource path="res://collectables/Level.tscn" type="PackedScene" id=5]
 [ext_resource path="res://shaders/softshadow.shader" type="Shader" id=6]
 [ext_resource path="res://buildings/buildingSelection.tscn" type="PackedScene" id=7]
-[ext_resource path="res://shaders/shadow_casters_container.gd" type="Script" id=8]
+[ext_resource path="res://shaders/fullscreen_viewport.gd" type="Script" id=8]
 [ext_resource path="res://player/Base.tscn" type="PackedScene" id=9]
 [ext_resource path="res://manifestation/manifestation.tscn" type="PackedScene" id=10]
 
@@ -31,7 +31,18 @@ transform = Transform2D( 1, 0, 0, 1, 1050, 50 )
 
 [node name="Inventory" parent="." instance=ExtResource( 4 )]
 
-[node name="shadow_casters_container" type="ViewportContainer" parent="."]
+[node name="color_tint_container" type="ViewportContainer" parent="."]
+stretch = true
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="viewport" type="Viewport" parent="color_tint_container"]
+handle_input_locally = false
+render_target_update_mode = 3
+
+[node name="shadow_casters_container" type="ViewportContainer" parent="color_tint_container/viewport"]
 material = SubResource( 1 )
 grow_horizontal = 2
 grow_vertical = 2
@@ -43,28 +54,28 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="viewport" type="Viewport" parent="shadow_casters_container"]
+[node name="viewport" type="Viewport" parent="color_tint_container/viewport/shadow_casters_container"]
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
 physics_object_picking = true
 
-[node name="Level" parent="shadow_casters_container/viewport" instance=ExtResource( 5 )]
+[node name="Level" parent="color_tint_container/viewport/shadow_casters_container/viewport" instance=ExtResource( 5 )]
 
-[node name="GoodBase" parent="shadow_casters_container/viewport" instance=ExtResource( 9 )]
+[node name="GoodBase" parent="color_tint_container/viewport/shadow_casters_container/viewport" instance=ExtResource( 9 )]
 good_team = true
 
-[node name="EvilBase" parent="shadow_casters_container/viewport" instance=ExtResource( 9 )]
+[node name="EvilBase" parent="color_tint_container/viewport/shadow_casters_container/viewport" instance=ExtResource( 9 )]
 
-[node name="manifestation" parent="shadow_casters_container/viewport" instance=ExtResource( 10 )]
+[node name="manifestation" parent="color_tint_container/viewport/shadow_casters_container/viewport" instance=ExtResource( 10 )]
 position = Vector2( 935.042, 270.768 )
 manifestation_name = "collector"
 
-[node name="RigidBody2D" type="RigidBody2D" parent="shadow_casters_container/viewport"]
+[node name="RigidBody2D" type="RigidBody2D" parent="color_tint_container/viewport/shadow_casters_container/viewport"]
 position = Vector2( 220.99, 136.671 )
 script = ExtResource( 3 )
 
-[node name="ColorRect" type="ColorRect" parent="shadow_casters_container/viewport/RigidBody2D"]
+[node name="ColorRect" type="ColorRect" parent="color_tint_container/viewport/shadow_casters_container/viewport/RigidBody2D"]
 margin_left = -20.0
 margin_top = -20.0
 margin_right = 20.0
@@ -73,8 +84,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="shadow_casters_container/viewport/RigidBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="color_tint_container/viewport/shadow_casters_container/viewport/RigidBody2D"]
 shape = SubResource( 2 )
 
-[node name="sync" parent="shadow_casters_container/viewport/RigidBody2D" instance=ExtResource( 2 )]
+[node name="sync" parent="color_tint_container/viewport/shadow_casters_container/viewport/RigidBody2D" instance=ExtResource( 2 )]
 synced_properties = PoolStringArray( "rotation", "linear_velocity", "angular_velocity" )

@@ -210,7 +210,7 @@ func collect(collectable):
 
 func update_inventory():
 	if is_network_master() && behaviour().can_collect():
-		$"../../../Inventory".update_inventory(inventory)
+		$"../../../../../Inventory".update_inventory(inventory)
 
 func clear_inventory():
 	if is_network_master() && behaviour().can_collect():

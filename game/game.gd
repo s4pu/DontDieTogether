@@ -3,29 +3,33 @@ extends Node2D
 var port = 8899
 var ip = '127.0.0.1'
 var max_players = 200
+var manifestations_menu
 
 # put game-specific (non network) init things here
 func game_ready():
+
+	var viewport = $color_tint_container/viewport/shadow_casters_container/viewport
 # warning-ignore:return_value_discarded
-	$shadow_casters_container/viewport/GoodBase.connect("base_entered", self, "show_manifestations")
+	viewport.get_node("GoodBase").connect("base_entered", self, "show_manifestations")
 # warning-ignore:return_value_discarded
-	$shadow_casters_container/viewport/GoodBase.connect("base_exited", self, "hide_manifestations")
+	viewport.get_node("GoodBase").connect("base_exited", self, "hide_manifestations")
 # warning-ignore:return_value_discarded
-	$shadow_casters_container/viewport/EvilBase.connect("base_entered", self, "show_manifestations")
+	viewport.get_node("EvilBase").connect("base_entered", self, "show_manifestations")
 # warning-ignore:return_value_discarded
-	$shadow_casters_container/viewport/EvilBase.connect("base_exited", self, "hide_manifestations")
+	viewport.get_node("EvilBase").connect("base_exited", self, "hide_manifestations")
 
 func show_manifestations():
-	var menu = preload("res://UI/manifestation_selection.tscn").instance()
-	menu.name = 'manifestation_selection'
-	menu.connect("manifestation_selected", self, "manifestation_selected")
-	add_child(menu)
+	if not manifestations_menu:
+		manifestations_menu = preload("res://UI/manifestation_selection.tscn").instance()
+		manifestations_menu.name = 'manifestation_selection'
+		manifestations_menu.connect("manifestation_selected", self, "manifestation_selected")
+		add_child(manifestations_menu)
 func manifestation_selected(name):
 	my_player().rpc("assume_manifestation", name)
 func hide_manifestations():
-	var selection = get_node_or_null('manifestation_selection')
-	if selection:
-		selection.queue_free()
+	if manifestations_menu:
+		manifestations_menu.queue_free()
+		manifestations_menu = null
 
 func my_player():
 	for player in get_tree().get_nodes_in_group("players"):
@@ -53,7 +57,7 @@ func _ready():
 		if get_tree().connect("network_peer_disconnected", self, "server_player_disconnected") != OK:
 			print("An error occured while trying to connec the network peer disconnected signal")
 		
-		$shadow_casters_container/viewport/Level.spawn()
+		$color_tint_container/viewport/shadow_casters_container/viewport/Level.spawn()
 	
 	get_tree().set_network_peer(peer)
 	
@@ -113,7 +117,7 @@ remote func register_player(player_id: int, position, state: Dictionary):
 	player.name = String(player.id)
 	player.add_to_group("players")
 	
-	$shadow_casters_container/viewport.add_child(player)
+	$color_tint_container/viewport/shadow_casters_container/viewport.add_child(player)
 	
 	if position:
 		player.position = position

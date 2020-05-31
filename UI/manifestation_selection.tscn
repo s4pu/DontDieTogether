@@ -11,10 +11,10 @@ __meta__ = {
 }
 
 [node name="row" type="HBoxContainer" parent="."]
-margin_left = 68.7351
-margin_top = 722.287
-margin_right = 108.735
-margin_bottom = 762.287
+margin_left = 12.2425
+margin_top = 593.717
+margin_right = 52.2424
+margin_bottom = 633.717
 __meta__ = {
 "_edit_use_anchors_": false
 }
