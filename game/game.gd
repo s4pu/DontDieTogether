@@ -17,7 +17,15 @@ func game_ready():
 	viewport.get_node("EvilBase").connect("base_entered", self, "show_manifestations")
 # warning-ignore:return_value_discarded
 	viewport.get_node("EvilBase").connect("base_exited", self, "hide_manifestations")
+	
+	viewport.get_node("GoodBase").get_child(3).connect("game_over", self, "show_game_over", ["evil"])
+	viewport.get_node("EvilBase").get_child(3).connect("game_over", self, "show_game_over", ["good"])	
 
+func show_game_over(team):
+	var game_over = preload("res://game/gameOver.tscn").instance()
+	get_tree().change_scene_to(game_over)
+	game_over.end_game(team)
+	
 func show_manifestations():
 	if not manifestations_menu:
 		manifestations_menu = preload("res://UI/manifestation_selection.tscn").instance()
