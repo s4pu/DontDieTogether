@@ -1,8 +1,14 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/sloth.png" type="Texture" id=2]
 [ext_resource path="res://shaders/outline.shader" type="Shader" id=3]
+[ext_resource path="res://audio/footstep_grass_medium_1.wav" type="AudioStream" id=4]
+[ext_resource path="res://audio/footstep_grass_heavy_3.wav" type="AudioStream" id=5]
+[ext_resource path="res://audio/footstep_grass_heavy_2.wav" type="AudioStream" id=6]
+[ext_resource path="res://audio/footstep_grass_heavy_1.wav" type="AudioStream" id=7]
+[ext_resource path="res://audio/footstep_grass_medium_2.wav" type="AudioStream" id=8]
+[ext_resource path="res://player/footsteps.gd" type="Script" id=9]
 
 [sub_resource type="ParticlesMaterial" id=1]
 flag_disable_z = true
@@ -61,3 +67,26 @@ percent_visible = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="footsteps" type="Node" parent="."]
+script = ExtResource( 9 )
+
+[node name="footstep_1" type="AudioStreamPlayer" parent="footsteps"]
+stream = ExtResource( 7 )
+volume_db = -25.077
+
+[node name="footstep_2" type="AudioStreamPlayer" parent="footsteps"]
+stream = ExtResource( 6 )
+volume_db = -25.077
+
+[node name="footstep_3" type="AudioStreamPlayer" parent="footsteps"]
+stream = ExtResource( 5 )
+volume_db = -25.077
+
+[node name="footstep_4" type="AudioStreamPlayer" parent="footsteps"]
+stream = ExtResource( 4 )
+volume_db = -25.077
+
+[node name="footstep_5" type="AudioStreamPlayer" parent="footsteps"]
+stream = ExtResource( 8 )
+volume_db = -25.077
