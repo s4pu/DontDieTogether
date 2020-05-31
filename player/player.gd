@@ -127,16 +127,16 @@ func _process(dt):
 			rset("position", position)
 			if collision:
 				var collider = collision.get_collider()
-				if collider.is_in_group("buildings"):
+				if collider.is_in_group("buildings") or collider.is_in_group("artefact"):
 					if charging_status == 2:
 						building_collide(collision)
 						charging_status = 0
 						last_charge_time = OS.get_ticks_msec()
 					else:
 						rpc("take_damage", collision.get_collider().damage_on_contact)
-						
+			
 			$sounds/footsteps.play_if_necessary()
-						
+			
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
