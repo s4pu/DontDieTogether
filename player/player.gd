@@ -115,7 +115,7 @@ func _process(dt):
 					selected_building.destroy()
 					selected_building = null
 			if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
-				good_team = not good_team
+				set_team(not good_team)
 			if Input.is_action_just_pressed("free_manifestation"):
 				rpc("drop_manifestation", position)
 		
