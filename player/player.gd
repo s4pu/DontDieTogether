@@ -106,8 +106,6 @@ remotesync func drop_manifestation(position):
 
 func set_team(team):
 	good_team = team
-	#var animal =  Global.ANIMALS["default"][good_team]
-	#$sprite.texture = load("res://player/" + animal + ".png")
 	var color = Color.indianred if good_team else Color.royalblue
 	$sprite.material.set_shader_param("outline_color", color)
 
@@ -191,9 +189,7 @@ remotesync func take_damage(points):
 		rset("dead", true)
 
 func behaviour():
-	var x = Global.ANIMALS[current_manifestation]["behaviour"].new()
-	print(current_manifestation)
-	return x
+	return Global.ANIMALS[current_manifestation]["behaviour"].new()
 
 func select_building(building):
 	if behaviour().can_build():
