@@ -6,12 +6,10 @@ const elements = {
 	'stone': ['rock.png'],
 	'food': ['bush.png']
 }
-	
-# Called when the node enters the scene tree for the first time.
+var positions = {}
+
 func _ready():
 	set_network_master(1)
-#	if is_network_master():0
-#		spawn()	
 
 func get_position_on_tilemap(position):
 	# 1, 1 --> 32, 32
@@ -27,10 +25,16 @@ func spawn():
 	var num_elem = 500
 	
 	for i in num_elem:
-		var pos = Vector2(randi() % Global.MAP_SIZE, randi() % Global.MAP_SIZE)
-		pos = get_position_on_tilemap(pos)
-		spawn_collectable(elements.keys()[i % len(elements)], pos)
+		var position = Vector2(0, 0)
 		
+		while (position.x < 640 and position.y < 640)\
+		  or (position.x > Global.MAP_SIZE - 640 and position.y > Global.MAP_SIZE - 640)\
+		  or positions.has(position):
+			position = Vector2(randi() % Global.MAP_SIZE, randi() % Global.MAP_SIZE)
+			position = get_position_on_tilemap(position)
+		
+		positions[position] = true
+		spawn_collectable(elements.keys()[i % len(elements)], position)
 
 func spawn_collectable(name, position):
 	var collectable = preload("res://collectables/Collectable.tscn").instance()
