@@ -22,19 +22,19 @@ var ANIMALS = {
 		"building_damage": 0,
 		"player_damage": 0,
 	},
-	"cook": {
-		true: "cow",
-		false: "chicken",
-		"hitpoints": 100,
-		"speed": 150,
-		"behaviour": CookBehaviour,
-		"building_damage": 0,
-		"player_damage": 0,
-	},
+	#"cook": {
+	#	true: "cow",
+	#	false: "chicken",
+	#	"hitpoints": 100,
+	#	"speed": 150,
+	#	"behaviour": CookBehaviour,
+	#	"building_damage": 0,
+	#	"player_damage": 0,
+	#},
 	"fighter": {
 		true: "wolf",
 		false: "crocodile",
-		"hitpoints": 150,
+		"hitpoints": 300,
 		"speed": 200,
 		"behaviour": FighterBehaviour,
 		"building_damage": 5,
@@ -52,7 +52,7 @@ var ANIMALS = {
 	"siege": {
 		true: "ram",
 		false: "rhino",
-		"hitpoints": 500,
+		"hitpoints": 1000,
 		"speed": 80,
 		"behaviour": SiegeBehaviour,
 		"building_damage": 30,
@@ -79,10 +79,10 @@ var ANIMALS = {
 	"ranged": {
 		true: "giraffe",
 		false: "penguin",
-		"hitpoints": 100,
+		"hitpoints": 60,
 		"speed": 150,
 		"behaviour": RangedBehaviour,
-		"player_damage": 80,
+		"player_damage": 50,
 		"building_damage": 3,
 	}
 }
