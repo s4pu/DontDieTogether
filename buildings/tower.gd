@@ -4,6 +4,7 @@ extends "res://buildings/building.gd"
 const tower_hp = 80
 const tower_costs = [1, 1]
 const tower_material = ["stone", "wood"]
+const tower_damage = 5
 const WEAPON_COOLDOWN = 1000 # milliseconds
 
 var last_shot_time = 0
@@ -38,6 +39,7 @@ func spawn_projectile(position, direction, name):
 	projectile.direction = direction
 	projectile.owned_by = self
 	projectile.good_team = good_team
+	projectile.player_damage = tower_damage
 	get_parent().add_child(projectile)
 	return projectile
 	
