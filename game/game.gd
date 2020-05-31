@@ -32,6 +32,17 @@ func my_player():
 			return player
 	return null
 
+func next_player_team():
+	var players = get_tree().get_nodes_in_group("players")
+	var count_good = 0
+	var count_evil = 0
+	for player in players:
+		if player.good_team:
+			count_good += 1
+		else:
+			count_evil += 1
+	return count_good <= count_evil
+
 func _ready():
 	var peer = NetworkedMultiplayerENet.new()
 	var is_client = "--client" in OS.get_cmdline_args()
@@ -58,9 +69,8 @@ func _ready():
 	
 	game_ready()
 	
-	var players = get_tree().get_nodes_in_group("players")
 	if not is_dedicated and not is_client:
-		register_player(1, null, {})
+		register_player(1, null, {}, next_player_team())
 
 func client_note_disconnected():
 	print("Server disconnected from player, exiting ...")
@@ -71,13 +81,13 @@ func server_player_connected(player_id: int):
 		print("Connected ", player_id)
 		# get our new player informed about all the old players and objects
 		for old_player in get_tree().get_nodes_in_group("players"):
-			rpc_id(player_id, "register_player", old_player.id, old_player.position, old_player.get_sync_state())
+			rpc_id(player_id, "register_player", old_player.id, old_player.position, old_player.get_sync_state(), old_player.good_team)
 		for node in get_tree().get_nodes_in_group("synced"):
 			rpc_id(player_id, "spawn_object", node.name, node.filename, node.get_path(), node.position, node.get_node("sync").get_sync_state())
 		
 		# inform all our players (including himself) about the new player
-		var new_player = register_player(player_id, null, {})
-		rpc("register_player", player_id, new_player.position, new_player.get_sync_state())
+		var new_player = register_player(player_id, null, {}, next_player_team())
+		rpc("register_player", player_id, new_player.position, new_player.get_sync_state(), new_player.good_team)
 
 func server_player_disconnected(player_id: int):
 	print("Disconnected ", player_id)
@@ -105,9 +115,10 @@ remote func spawn_object(name: String, filename: String, path: NodePath, positio
 	
 	return object
 
-remote func register_player(player_id: int, position, state: Dictionary):
+remote func register_player(player_id: int, position, state: Dictionary, good_team: bool):
 	var player: Node2D = preload("res://player/player.tscn").instance()
 	player.id = player_id
+	player.good_team = good_team
 	player.set_network_master(player.id)
 	player.name = String(player.id)
 	player.add_to_group("players")
