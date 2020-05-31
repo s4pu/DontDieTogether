@@ -1,15 +1,12 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://game/game.gd" type="Script" id=1]
-[ext_resource path="res://sync/sync.tscn" type="PackedScene" id=2]
-[ext_resource path="res://sync/syncable_rigid_body.gd" type="Script" id=3]
 [ext_resource path="res://UI/Inventory.tscn" type="PackedScene" id=4]
 [ext_resource path="res://collectables/Level.tscn" type="PackedScene" id=5]
 [ext_resource path="res://shaders/softshadow.shader" type="Shader" id=6]
 [ext_resource path="res://buildings/buildingSelection.tscn" type="PackedScene" id=7]
 [ext_resource path="res://shaders/fullscreen_viewport.gd" type="Script" id=8]
 [ext_resource path="res://player/Base.tscn" type="PackedScene" id=9]
-[ext_resource path="res://manifestation/manifestation.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/time_of_day.gd" type="Script" id=11]
 [ext_resource path="res://shaders/color_tint.shader" type="Shader" id=12]
 [ext_resource path="res://audio/night.ogg" type="AudioStream" id=13]
@@ -27,9 +24,6 @@ shader_param/modulate = Color( 0, 0, 0, 1 )
 shader_param/blurRadius = 6.372
 shader_param/sampleRadius = 4
 shader_param/shadowAlpha = 1.5
-
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 19.4735, 20.0481 )
 
 [node name="game" type="Node2D"]
 script = ExtResource( 1 )
@@ -82,29 +76,6 @@ physics_object_picking = true
 good_team = true
 
 [node name="EvilBase" parent="color_tint_container/viewport/shadow_casters_container/viewport" instance=ExtResource( 9 )]
-
-[node name="manifestation" parent="color_tint_container/viewport/shadow_casters_container/viewport" instance=ExtResource( 10 )]
-position = Vector2( 935.042, 270.768 )
-manifestation_name = "collector"
-
-[node name="RigidBody2D" type="RigidBody2D" parent="color_tint_container/viewport/shadow_casters_container/viewport"]
-position = Vector2( 220.99, 136.671 )
-script = ExtResource( 3 )
-
-[node name="ColorRect" type="ColorRect" parent="color_tint_container/viewport/shadow_casters_container/viewport/RigidBody2D"]
-margin_left = -20.0
-margin_top = -20.0
-margin_right = 20.0
-margin_bottom = 20.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="color_tint_container/viewport/shadow_casters_container/viewport/RigidBody2D"]
-shape = SubResource( 3 )
-
-[node name="sync" parent="color_tint_container/viewport/shadow_casters_container/viewport/RigidBody2D" instance=ExtResource( 2 )]
-synced_properties = PoolStringArray( "rotation", "linear_velocity", "angular_velocity" )
 
 [node name="time_of_day" type="Node" parent="."]
 script = ExtResource( 11 )
