@@ -20,8 +20,9 @@ func _on_Base_body_entered(body):
 		  body.is_network_master() && \
 		  body.good_team == good_team:
 		unload_inventory(body.inventory)
-		body.clear_inventory()
-		
+		body.clear_player_inventory()
+		body.update_base_inventory()
+
 func unload_inventory(player_inventory):
 	for item in Global.RESOURCES:
 		rpc("increment_item", item, player_inventory[item])
