@@ -1,13 +1,12 @@
 extends Area2D
 
 export (bool) var good_team
-var inventory = Global.EMPTY_INVENTORY.duplicate()
-#{
-#	"wood": 20,
-#	"stone": 20,
-#	"food": 20,
-#	"mushroom": 20,
-#}
+var inventory = {
+	"wood": 20,
+	"stone": 20,
+	"food": 20,
+	"mushroom": 20,
+}
 
 signal base_entered
 signal base_exited
