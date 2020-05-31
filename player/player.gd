@@ -187,8 +187,22 @@ remotesync func take_damage(points):
 	emit_signal("health_changed", hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"])
 	
 	if hitpoints <= 0:
-		hide()
-		rset("dead", true)
+		die()
+
+func die():
+	hide()
+	dead = true
+	position = Vector2(-8000, -8000)
+	hitpoints = null
+	assume_manifestation("default")
+	if is_network_master():
+		yield(get_tree().create_timer(6), "timeout")
+		rpc("respawn")
+
+remotesync func respawn():
+	position = get_base().position
+	dead = false
+	show()
 
 func behaviour():
 	return Global.ANIMALS[current_manifestation]["behaviour"].new()
