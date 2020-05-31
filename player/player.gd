@@ -172,6 +172,7 @@ func set_manifestation(name):
 	speed = manifestation["speed"]
 	current_manifestation = name
 	set_inventory_visibility()
+	get_building_menu().set_visibility(behaviour().can_build())
 	
 	emit_signal("manifestation_changed", name)
 
@@ -238,6 +239,9 @@ func spawn_building(building, position):
 		building.position = get_position_on_tilemap(position)
 		self.position = get_position_after_building(position, building.position)
 		previous_buildings_position = building.position
+		var color = Color.royalblue if building.good_team else Color.indianred
+		building.get_node("Sprite").material = building.get_node("Sprite").material.duplicate()
+		building.get_node("Sprite").material.set_shader_param("outline_color", color)
 		get_parent().add_child(building)
 		building.connect("select_building", self, "select_building")
 		building.connect("deselect_building", self, "deselect_building")
