@@ -6,9 +6,13 @@ var max_players = 200
 
 # put game-specific (non network) init things here
 func game_ready():
+# warning-ignore:return_value_discarded
 	$shadow_casters_container/viewport/GoodBase.connect("base_entered", self, "show_manifestations")
+# warning-ignore:return_value_discarded
 	$shadow_casters_container/viewport/GoodBase.connect("base_exited", self, "hide_manifestations")
+# warning-ignore:return_value_discarded
 	$shadow_casters_container/viewport/EvilBase.connect("base_entered", self, "show_manifestations")
+# warning-ignore:return_value_discarded
 	$shadow_casters_container/viewport/EvilBase.connect("base_exited", self, "hide_manifestations")
 
 func show_manifestations():

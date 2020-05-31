@@ -16,7 +16,7 @@ func _ready():
 	costs = tower_costs
 	needed_material = tower_material
 	
-func _process(dt):
+func _process(_dt):
 	if can_shoot():
 		target_attk()
 
@@ -42,7 +42,7 @@ func spawn_projectile(position, direction, name):
 	return projectile
 	
 func _on_Area2D2_body_entered(body):
-	if body.good_team != good_team:
+	if body.is_in_group("players") and body.good_team != good_team:
 		target_list.append(body)
 
 func _on_Area2D2_body_exited(body):
