@@ -91,8 +91,7 @@ func _process(dt):
 				rpc("spawn_tower", position)
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
-			if Input.is_mouse_button_pressed(BUTTON_LEFT) \
-			  and can_shoot() and behaviour().can_shoot():
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_shoot():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				if behaviour().can_siege():
@@ -104,12 +103,12 @@ func _process(dt):
 				else:
 					rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
-			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit() and behaviour().can_melee_fight():
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
 				last_hit_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
-			if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
-				if (selected_building.good_team == good_team):
+			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
+				if selected_building.good_team == good_team:
 					selected_building.destroy()
 					selected_building = null
 			if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
@@ -130,13 +129,8 @@ func _process(dt):
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
-const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
-	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
-
-const MELEE_WEAPON_COOLDOWN = 1000 # milliseconds
-func can_hit():
-	return OS.get_ticks_msec() - last_hit_time > MELEE_WEAPON_COOLDOWN
+	return OS.get_ticks_msec() - last_shot_time > behaviour().weapon_cooldown()
 
 remotesync func drop_manifestation(position):
 	drop_manifestation_internal(position)

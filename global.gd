@@ -53,9 +53,9 @@ var ANIMALS = {
 		true: "ram",
 		false: "rhino",
 		"hitpoints": 100,
-		"speed": 150,
+		"speed": 80,
 		"behaviour": SiegeBehaviour,
-		"building_damage": 10,
+		"building_damage": 30,
 		"player_damage": 20,
 	},
 	"collector": {
@@ -108,6 +108,8 @@ class AnimalBehaviour:
 		return false
 	func after_shoot():
 		pass
+	func weapon_cooldown():
+		return 400
 
 class BuildingBehaviour extends AnimalBehaviour:
 	func can_build():
@@ -118,6 +120,8 @@ class SiegeBehaviour extends AnimalBehaviour:
 		return true
 	func can_shoot():
 		return true
+	func weapon_cooldown():
+		return 2600
 
 class CollectingBehaviour extends AnimalBehaviour:
 	func can_collect():
@@ -130,6 +134,8 @@ class CookBehaviour extends AnimalBehaviour:
 class FighterBehaviour extends AnimalBehaviour:
 	func can_melee_fight():
 		return true
+	func weapon_cooldown():
+		return 1000
 
 class HealerBehaviour extends AnimalBehaviour:
 	func can_heal():
