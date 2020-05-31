@@ -36,7 +36,7 @@ func _ready():
 	
 	assume_manifestation("default")
 	
-	position = $"../GoodBase".position if good_team else $"../EvilBase".position
+	position = get_base().position + Vector2(128, 128).rotated(deg2rad(randi() % 360))
 	#position = Vector2(rand_range(0, get_viewport_rect().size.x), rand_range(0, get_viewport_rect().size.y))
 	
 	$Camera2D.current = is_network_master()
@@ -44,8 +44,6 @@ func _ready():
 	$particles_steps.rset_config("emitting", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 	$particles_steps.rset_config("rotation", MultiplayerAPI.RPC_MODE_REMOTESYNC)
 	
-	#get_tree().get_root().get_node("game/Player_Inventory").connect("update_inventory", self, update_player_inventory())
-
 func get_sync_state():
 	# place all synced properties in here
 	var properties = ['color', "hitpoints", "current_manifestation"]
@@ -145,13 +143,15 @@ func can_hit():
 	return OS.get_ticks_msec() - last_hit_time > MELEE_WEAPON_COOLDOWN
 
 remotesync func drop_manifestation(position):
+	drop_manifestation_internal(position)
+	assume_manifestation("default")
+
+func drop_manifestation_internal(position):
 	var pickup = preload("res://manifestation/manifestation.tscn").instance()
 	pickup.position = position
 	pickup.manifestation_name = current_manifestation
 	pickup.dropped_by = id
 	get_parent().add_child(pickup)
-	
-	assume_manifestation("default")
 
 func set_team(team):
 	good_team = team
@@ -283,6 +283,8 @@ remotesync func take_damage(points):
 		die()
 
 func die():
+	drop_manifestation_internal(position)
+	
 	var particles = preload("res://player/Dying_Particle.tscn").instance()
 	particles.position = position
 	particles.get_node("Particles2D").emitting = true

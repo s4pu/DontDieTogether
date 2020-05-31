@@ -11,7 +11,10 @@ const DAY_LENGTH_MSECS = 1000 * 60
 const MAX_SHADOW_X_OFFSET = 16.0
 const MAX_SHADOW_Y_OFFSET = 4.0
 const MAX_SHADOW_ALPHA = 2.5
-const NIGHT_COLOR = Color.darkslateblue
+const NIGHT_COLOR = Color.slateblue
+
+var day = 1.0
+var night = 1.0 - day
 
 func _ready():
 	start_time = OS.get_ticks_msec()
@@ -33,8 +36,8 @@ func set_time_of_day():
 	#var night = abs(2.0 * (progress - 0.5))
 	#var day = 1.0 - night
 	
-	var day = clamp(abs(4 * 2.0 * abs(progress - 1.0) - 2.0) - 1.0, 0.0, 1.0)
-	var night = 1.0 - day
+	day = clamp(abs(4 * 2.0 * abs(progress - 1.0) - 2.0) - 1.0, 0.0, 1.0)
+	night = 1.0 - day
 	
 	var shadow_alpha = MAX_SHADOW_ALPHA * (day)
 	shadow_cont.material.set_shader_param("shadowAlpha", shadow_alpha)
