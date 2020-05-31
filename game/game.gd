@@ -7,10 +7,11 @@ var manifestations_menu
 
 # put game-specific (non network) init things here
 func game_ready():
-	$shadow_casters_container/viewport/GoodBase.connect("base_entered", self, "show_manifestations")
-	$shadow_casters_container/viewport/GoodBase.connect("base_exited", self, "hide_manifestations")
-	$shadow_casters_container/viewport/EvilBase.connect("base_entered", self, "show_manifestations")
-	$shadow_casters_container/viewport/EvilBase.connect("base_exited", self, "hide_manifestations")
+	var viewport = $color_tint_container/viewport/shadow_casters_container/viewport
+	viewport.get_node("GoodBase").connect("base_entered", self, "show_manifestations")
+	viewport.get_node("GoodBase").connect("base_exited", self, "hide_manifestations")
+	viewport.get_node("EvilBase").connect("base_entered", self, "show_manifestations")
+	viewport.get_node("EvilBase").connect("base_exited", self, "hide_manifestations")
 
 func show_manifestations():
 	if not manifestations_menu:
@@ -51,7 +52,7 @@ func _ready():
 		if get_tree().connect("network_peer_disconnected", self, "server_player_disconnected") != OK:
 			print("An error occured while trying to connec the network peer disconnected signal")
 		
-		$shadow_casters_container/viewport/Level.spawn()
+		$color_tint_container/viewport/shadow_casters_container/viewport/Level.spawn()
 	
 	get_tree().set_network_peer(peer)
 	
@@ -111,7 +112,7 @@ remote func register_player(player_id: int, position, state: Dictionary):
 	player.name = String(player.id)
 	player.add_to_group("players")
 	
-	$shadow_casters_container/viewport.add_child(player)
+	$color_tint_container/viewport/shadow_casters_container/viewport.add_child(player)
 	
 	if position:
 		player.position = position
