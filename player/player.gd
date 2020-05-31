@@ -94,7 +94,7 @@ func _process(dt):
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) \
-			  and (behaviour().can_melee_fight() or behaviour().can_heal() or behaviour().can_siege())\
+			  and (behaviour().can_ranged_fight() or behaviour().can_heal() or behaviour().can_siege())\
 			  and can_shoot():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
@@ -106,7 +106,7 @@ func _process(dt):
 					did_move = true
 				else:
 					rpc("spawn_projectile", position, direction, Uuid.v4())
-			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit():
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit() and behaviour().can_melee_fight():
 				last_hit_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
