@@ -29,7 +29,8 @@ func spawn():
 		
 		while (position.x < 640 and position.y < 640)\
 		  or (position.x > Global.MAP_SIZE - 640 and position.y > Global.MAP_SIZE - 640)\
-		  or positions.has(position):
+		  or positions.has(position)\
+		  or $tiles.get_cellv($tiles.world_to_map(position)) != -1:
 			position = Vector2(randi() % Global.MAP_SIZE, randi() % Global.MAP_SIZE)
 			position = get_position_on_tilemap(position)
 		
