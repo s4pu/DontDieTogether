@@ -24,7 +24,6 @@ var charging_status = 0 	#  0) no charge  1) back   2) forward
 
 var current_manifestation setget set_manifestation
 var last_shot_time = 0
-var last_hit_time = 0
 remotesync var hitpoints setget set_hitpoints
 remotesync var dead = false
 
@@ -108,7 +107,7 @@ func _process(dt):
 				rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
-				last_hit_time = OS.get_ticks_msec()
+				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
 			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
