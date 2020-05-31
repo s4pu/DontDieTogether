@@ -36,6 +36,7 @@ func destroy():
 remotesync func take_damage(damage):
 	hp -= damage
 	set_hitpoints(hp)
+	$impact_sounds.play_random()
 	if (hp <= 0):
 		destroy()
 

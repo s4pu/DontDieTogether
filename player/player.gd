@@ -101,19 +101,19 @@ func _process(dt):
 					charge_direction = direction
 					collision = move_and_collide(- direction * charge_back_speed * dt)
 					did_move = true
-					$sounds/wooshes.play_random()
+					$sounds/wooshes.rpc("play_random")
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_shoot():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
-				$sounds/arrow_attacks.play_random()
-				$sounds/arrow_wooshes.play_random()
+				$sounds/arrow_attacks.rpc("play_random")
+				$sounds/arrow_wooshes.rpc("play_random")
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
-				$sounds/wooshes.play_random()
+				$sounds/wooshes.rpc("play_random")
 			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
 				if selected_building.good_team == good_team:
 					selected_building.destroy()
