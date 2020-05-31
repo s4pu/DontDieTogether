@@ -26,6 +26,10 @@ func set_color(color):
 	$Health.add_stylebox_override("fg", box)
 	
 func destroy():
+	var particles = preload("res://buildings/Dying_Particle.tscn").instance()
+	particles.position = position
+	particles.get_node("Particles2D").emitting = true
+	get_parent().add_child(particles)
 	set_hitpoints(0)
 	queue_free()
 
