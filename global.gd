@@ -40,6 +40,7 @@ var ANIMALS = {
 		false: "rhino",
 		"hitpoints": 100,
 		"speed": 150,
+		"behaviour": SiegingBehaviour,
 	},
 	"collector": {
 		true: "pig",
@@ -85,4 +86,8 @@ class BuildingBehaviour extends AnimalBehaviour:
 
 class CollectingBehaviour extends AnimalBehaviour:
 	func can_collect():
+		return true
+		
+class SiegingBehaviour extends AnimalBehaviour:
+	func can_siege():
 		return true
