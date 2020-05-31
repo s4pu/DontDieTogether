@@ -127,6 +127,9 @@ func _process(dt):
 						charging_status = 0
 					else:
 						rpc("take_damage", collision.get_collider().damage_on_contact)
+						
+			$footsteps.play_if_necessary()
+						
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
