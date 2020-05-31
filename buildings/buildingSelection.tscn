@@ -129,12 +129,14 @@ scale = Vector2( 1.13766, 1.13766 )
 texture = ExtResource( 4 )
 
 [node name="Label" type="Label" parent="MarginContainer/tower/wood"]
+anchor_left = 0.0201874
+anchor_right = 0.0201874
 margin_left = 19.4688
 margin_top = -5.69818
 margin_right = 40.4688
 margin_bottom = 9.30182
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "3"
+text = "20"
 __meta__ = {
 "_edit_use_anchors_": true
 }
@@ -145,12 +147,14 @@ scale = Vector2( 1.13766, 1.13766 )
 texture = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="MarginContainer/tower/stone"]
+anchor_top = 1.49012e-08
+anchor_bottom = 2.98023e-08
 margin_left = 18.5191
 margin_top = -6.17302
 margin_right = 39.5191
 margin_bottom = 8.82698
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "3"
+text = "20"
 __meta__ = {
 "_edit_use_anchors_": true
 }
