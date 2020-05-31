@@ -1,10 +1,10 @@
 extends "res://buildings/building.gd"
 
 
-const tower_hp = 80
-const tower_costs = [1, 1]
+const tower_hp = 150
+const tower_costs = [20, 20]
 const tower_material = ["stone", "wood"]
-const tower_damage = 5
+const tower_damage = 10
 const WEAPON_COOLDOWN = 1000 # milliseconds
 
 var last_shot_time = 0
