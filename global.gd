@@ -76,13 +76,15 @@ var ANIMALS = {
 		"building_damage": 0,
 		"player_damage": 0,
 	},
-	#"ranged": {
-	#	true: "",
-	#	false: "",
-	#	"hitpoints": 100,
-	#	"speed": 150,
-	#	"behaviour": RangedBehaviour,
-	#}
+	"ranged": {
+		true: "giraffe",
+		false: "penguin",
+		"hitpoints": 100,
+		"speed": 150,
+		"behaviour": RangedBehaviour,
+		"player_damage": 80,
+		"building_damage": 20,
+	}
 }
 
 class AnimalBehaviour:
