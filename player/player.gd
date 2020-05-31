@@ -174,12 +174,12 @@ func set_hitpoints(num):
 
 func set_manifestation(name):
 	var manifestation = Global.ANIMALS[name]
-	var health_percentage = hitpoints / manifestation["hitpoints"] if hitpoints != null else 1
+	var health_percentage = hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"] if hitpoints != null else 1
 	
 	$sprite.texture = load("res://player/" + manifestation[good_team] + ".png")
-	set_hitpoints(ceil(manifestation["hitpoints"] * health_percentage))
 	speed = manifestation["speed"]
 	current_manifestation = name
+	set_hitpoints(ceil(manifestation["hitpoints"] * health_percentage))
 	if is_network_master():
 		set_inventory_visibility()
 	
