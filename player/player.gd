@@ -141,13 +141,15 @@ func can_hit():
 	return OS.get_ticks_msec() - last_hit_time > MELEE_WEAPON_COOLDOWN
 
 remotesync func drop_manifestation(position):
+	drop_manifestation_internal(position)
+	assume_manifestation("default")
+
+func drop_manifestation_internal(position):
 	var pickup = preload("res://manifestation/manifestation.tscn").instance()
 	pickup.position = position
 	pickup.manifestation_name = current_manifestation
 	pickup.dropped_by = id
 	get_parent().add_child(pickup)
-	
-	assume_manifestation("default")
 
 func set_team(team):
 	good_team = team
@@ -279,6 +281,8 @@ remotesync func take_damage(points):
 		die()
 
 func die():
+	drop_manifestation_internal(position)
+	
 	var particles = preload("res://player/Dying_Particle.tscn").instance()
 	particles.position = position
 	particles.get_node("Particles2D").emitting = true
