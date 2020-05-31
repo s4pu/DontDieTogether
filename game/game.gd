@@ -7,10 +7,11 @@ var manifestations_menu
 
 # put game-specific (non network) init things here
 func game_ready():
-	$shadow_casters_container/viewport/GoodBase.connect("base_entered", self, "show_manifestations")
-	$shadow_casters_container/viewport/GoodBase.connect("base_exited", self, "hide_manifestations")
-	$shadow_casters_container/viewport/EvilBase.connect("base_entered", self, "show_manifestations")
-	$shadow_casters_container/viewport/EvilBase.connect("base_exited", self, "hide_manifestations")
+	var viewport = $color_tint_container/viewport/shadow_casters_container/viewport
+	viewport.get_node("GoodBase").connect("base_entered", self, "show_manifestations")
+	viewport.get_node("GoodBase").connect("base_exited", self, "hide_manifestations")
+	viewport.get_node("EvilBase").connect("base_entered", self, "show_manifestations")
+	viewport.get_node("EvilBase").connect("base_exited", self, "hide_manifestations")
 
 func show_manifestations():
 	if not manifestations_menu:
