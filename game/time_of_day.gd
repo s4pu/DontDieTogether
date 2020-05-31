@@ -7,7 +7,7 @@ var start_time = 0.0
 remotesync var progress = 0.0
 
 const START_PROGRESS = 0.0 #0.3
-const DAY_LENGTH_MSECS = 1000 * 30
+const DAY_LENGTH_MSECS = 1000 * 60
 const MAX_SHADOW_X_OFFSET = 16.0
 const MAX_SHADOW_Y_OFFSET = 4.0
 const MAX_SHADOW_ALPHA = 2.5
