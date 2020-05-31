@@ -4,7 +4,7 @@ extends "res://buildings/building.gd"
 const tower_hp = 150
 const tower_costs = [20, 20]
 const tower_material = ["stone", "wood"]
-const tower_damage = 10
+const tower_damage = 30
 const WEAPON_COOLDOWN = 1000 # milliseconds
 
 var last_shot_time = 0
@@ -13,12 +13,13 @@ var target_list = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set_network_master(1)
 	hp = tower_hp
 	costs = tower_costs
 	needed_material = tower_material
 	
 func _process(_dt):
-	if can_shoot():
+	if can_shoot() and is_network_master():
 		target_attk()
 
 func can_shoot():
@@ -29,9 +30,9 @@ func target_attk():
 		var target = target_list[0]
 		var target_dir = (target.global_position - global_position).normalized()
 		last_shot_time = OS.get_ticks_msec()
-		spawn_projectile(position, target_dir, Uuid.v4())
-	
-func spawn_projectile(position, direction, name):
+		rpc("spawn_projectile", position, target_dir, Uuid.v4())
+
+remotesync func spawn_projectile(position, direction, name):
 	var projectile = preload("res://examples/physics_projectile/physics_projectile.tscn").instance()
 	projectile.set_network_master(1)
 	projectile.name = name
