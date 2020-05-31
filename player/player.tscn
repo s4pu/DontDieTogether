@@ -82,9 +82,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="sounds" type="Node" parent="."]
+[node name="sounds" type="Node2D" parent="."]
 
-[node name="footsteps" type="Node" parent="sounds"]
+[node name="footsteps" type="Node2D" parent="sounds"]
 script = ExtResource( 9 )
 
 [node name="footstep_1" type="AudioStreamPlayer" parent="sounds/footsteps"]
@@ -107,7 +107,7 @@ volume_db = -25.077
 stream = ExtResource( 8 )
 volume_db = -25.077
 
-[node name="wooshes" type="Node" parent="sounds"]
+[node name="wooshes" type="Node2D" parent="sounds"]
 script = ExtResource( 15 )
 
 [node name="woosh_1" type="AudioStreamPlayer" parent="sounds/wooshes"]
@@ -125,14 +125,14 @@ stream = ExtResource( 14 )
 [node name="woosh_5" type="AudioStreamPlayer" parent="sounds/wooshes"]
 stream = ExtResource( 13 )
 
-[node name="arrow_attacks" type="Node" parent="sounds"]
+[node name="arrow_attacks" type="Node2D" parent="sounds"]
 script = ExtResource( 15 )
 
 [node name="arrow_attack" type="AudioStreamPlayer" parent="sounds/arrow_attacks"]
 stream = ExtResource( 17 )
 volume_db = -14.976
 
-[node name="arrow_wooshes" type="Node" parent="sounds"]
+[node name="arrow_wooshes" type="Node2D" parent="sounds"]
 script = ExtResource( 15 )
 
 [node name="arrow_woosh_1" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
@@ -151,7 +151,7 @@ volume_db = -4.16
 stream = ExtResource( 19 )
 volume_db = -4.16
 
-[node name="impacts" type="Node" parent="sounds"]
+[node name="impacts" type="Node2D" parent="sounds"]
 script = ExtResource( 15 )
 
 [node name="impact_1" type="AudioStreamPlayer" parent="sounds/impacts"]
