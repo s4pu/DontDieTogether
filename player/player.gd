@@ -79,6 +79,14 @@ func _process(dt):
 				selected_building = null
 		if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
 			good_team = not good_team
+		if Input.is_action_just_pressed("free_manifestation"):
+			var pickup = preload("res://manifestation/manifestation.tscn").instance()
+			pickup.position = position
+			pickup.manifestation_name = current_manifestation
+			pickup.dropped_by = id
+			get_parent().add_child(pickup)
+			
+			assume_manifestation("default")
 		
 		if did_move:
 			rset("position", position)

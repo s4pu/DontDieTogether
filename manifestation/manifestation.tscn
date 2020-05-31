@@ -36,7 +36,7 @@ extents = Vector2( 64, 64 )
 [node name="manifestation" type="Area2D"]
 script = ExtResource( 2 )
 
-[node name="mole" type="Sprite" parent="."]
+[node name="sprite" type="Sprite" parent="."]
 modulate = Color( 1, 1, 1, 0.670588 )
 material = SubResource( 1 )
 position = Vector2( 0.397, -20.2786 )
