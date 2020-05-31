@@ -72,7 +72,9 @@ func _process(dt):
 			rpc("spawn_tower", position)
 		if Input.is_action_just_pressed("ui_buildSpikes"):
 			rpc("spawn_spikes", position)
-		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
+		if Input.is_mouse_button_pressed(BUTTON_LEFT) \
+		  and (behaviour().can_melee_fight() or behaviour().can_heal())\
+		  and can_shoot():
 			last_shot_time = OS.get_ticks_msec()
 			var direction = -(position - get_global_mouse_position()).normalized()
 			rpc("spawn_projectile", position, direction, Uuid.v4())
@@ -139,6 +141,8 @@ remotesync func spawn_projectile(position, direction, name):
 	projectile.set_network_master(1)
 	projectile.name = name
 	projectile.position = position
+	projectile.player_damage = Global.ANIMALS[current_manifestation]["player_damage"]
+	projectile.building_damage = Global.ANIMALS[current_manifestation]["building_damage"]
 	projectile.direction = direction
 	projectile.owned_by = self
 	projectile.good_team = good_team
