@@ -42,3 +42,7 @@ func _on_Timer_timeout():
 func _on_Area2D_body_entered(body):
 	if body.good_team != good_team:
 		body.rpc("take_damage", 5)
+		if body.is_in_group("players"):
+			body.get_node("sounds/impacts").rpc("play_random")
+		if body.is_in_group("buildings") or body.is_in_group("artefact"):
+			body.get_node("impact_sounds").rpc("play_random")
