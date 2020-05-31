@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/team_composition_view.gd" type="Script" id=1]
+
+[node name="team_composition_view" type="HBoxContainer"]
+margin_right = 492.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="team_color" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 40, 40 )
+
+[node name="players" type="HBoxContainer" parent="."]
+margin_left = 44.0
+margin_right = 44.0
+margin_bottom = 40.0
