@@ -76,16 +76,20 @@ var ANIMALS = {
 		"building_damage": 0,
 		"player_damage": 0,
 	},
-	#"ranged": {
-	#	true: "",
-	#	false: "",
-	#	"hitpoints": 100,
-	#	"speed": 150,
-	#	"behaviour": RangedBehaviour,
-	#}
+	"ranged": {
+		true: "giraffe",
+		false: "penguin",
+		"hitpoints": 100,
+		"speed": 150,
+		"behaviour": RangedBehaviour,
+		"player_damage": 80,
+		"building_damage": 20,
+	}
 }
 
 class AnimalBehaviour:
+	var player
+	
 	func can_build():
 		return false
 	func can_collect():
@@ -100,6 +104,10 @@ class AnimalBehaviour:
 		return false
 	func can_siege():
 		return false
+	func can_shoot():
+		return false
+	func after_shoot():
+		pass
 
 class BuildingBehaviour extends AnimalBehaviour:
 	func can_build():
@@ -107,6 +115,8 @@ class BuildingBehaviour extends AnimalBehaviour:
 
 class SiegeBehaviour extends AnimalBehaviour:
 	func can_siege():
+		return true
+	func can_shoot():
 		return true
 
 class CollectingBehaviour extends AnimalBehaviour:
@@ -124,7 +134,13 @@ class FighterBehaviour extends AnimalBehaviour:
 class HealerBehaviour extends AnimalBehaviour:
 	func can_heal():
 		return true
+	func can_shoot():
+		return player.get_base().inventory['mushroom'] > 0
+	func after_shoot():
+		player.decrease_base_inventory(["mushroom"], [1])
 
 class RangedBehaviour extends AnimalBehaviour:
 	func can_ranged_fight():
+		return true
+	func can_shoot():
 		return true
