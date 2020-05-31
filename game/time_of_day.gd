@@ -4,6 +4,7 @@ onready var tint_cont = $"../color_tint_container"
 onready var shadow_cont = $"../color_tint_container/viewport/shadow_casters_container"
 
 var start_time = 0.0
+remotesync var progress = 0.0
 
 const DAY_LENGTH_MSECS = 1000 * 60 * 2
 const MAX_SHADOW_X_OFFSET = 16.0
@@ -15,14 +16,14 @@ func _ready():
 	start_time = OS.get_ticks_msec()
 
 func _process(delta):
+	if is_network_master():
+		var current_time = OS.get_ticks_msec() - start_time
+		var new_progress = fmod((current_time % DAY_LENGTH_MSECS) / float(DAY_LENGTH_MSECS), 1.0)
+		rset_unreliable("progress", new_progress)
+		
+	set_time_of_day()
 	
-	var current_time = OS.get_ticks_msec() - start_time
-	var progress = (current_time % DAY_LENGTH_MSECS) / float(DAY_LENGTH_MSECS)
-	set_time_of_day(progress)
-	
-func set_time_of_day(progress : float):
-	progress = fmod(progress, 1.0)
-	
+func set_time_of_day():	
 	var shadow_x_offset = -MAX_SHADOW_X_OFFSET * (progress - 0.5) * 2.0
 	shadow_cont.material.set_shader_param("offset", Vector2(shadow_x_offset, -MAX_SHADOW_Y_OFFSET))
 	
