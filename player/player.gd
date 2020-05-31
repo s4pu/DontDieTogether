@@ -101,15 +101,19 @@ func _process(dt):
 					charge_direction = direction
 					collision = move_and_collide(- direction * charge_back_speed * dt)
 					did_move = true
+					$sounds/wooshes.rpc("play_random")
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_shoot():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
+				$sounds/arrow_attacks.rpc("play_random")
+				$sounds/arrow_wooshes.rpc("play_random")
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
 				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
+				$sounds/wooshes.rpc("play_random")
 			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
 				if selected_building.good_team == good_team:
 					selected_building.destroy()
@@ -130,7 +134,7 @@ func _process(dt):
 					else:
 						rpc("take_damage", collision.get_collider().damage_on_contact)
 						
-			$footsteps.play_if_necessary()
+			$sounds/footsteps.play_if_necessary()
 						
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
@@ -242,10 +246,9 @@ func spawn_building(building, position):
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
 		self.position = get_position_after_building(position, building.position)
-		previous_buildings_position = building.position
-		var color = Color.royalblue if building.good_team else Color.indianred
+		previous_buildings_position = building.position 
 		building.get_node("Sprite").material = building.get_node("Sprite").material.duplicate()
-		building.get_node("Sprite").material.set_shader_param("outline_color", color)
+		building.set_color(Color.royalblue if building.good_team else Color.indianred)
 		get_parent().add_child(building)
 		building.connect("select_building", self, "select_building")
 		building.connect("deselect_building", self, "deselect_building")

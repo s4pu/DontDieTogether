@@ -7,6 +7,7 @@ const wall_material = ["stone"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	max_hp = wall_hp
 	hp = wall_hp
 	costs = wall_costs
 	needed_material = wall_material

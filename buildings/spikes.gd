@@ -7,6 +7,7 @@ const spikes_damage_on_contact = 5
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	max_hp = spikes_hp
 	hp = spikes_hp
 	costs = spikes_costs
 	needed_material = spikes_material

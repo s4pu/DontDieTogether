@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/sloth.png" type="Texture" id=2]
@@ -9,6 +9,17 @@
 [ext_resource path="res://audio/footstep_grass_heavy_1.wav" type="AudioStream" id=7]
 [ext_resource path="res://audio/footstep_grass_medium_2.wav" type="AudioStream" id=8]
 [ext_resource path="res://player/footsteps.gd" type="Script" id=9]
+[ext_resource path="res://audio/woosh_2.wav" type="AudioStream" id=10]
+[ext_resource path="res://audio/woosh_1.wav" type="AudioStream" id=11]
+[ext_resource path="res://audio/woosh_3.wav" type="AudioStream" id=12]
+[ext_resource path="res://audio/woosh_5.wav" type="AudioStream" id=13]
+[ext_resource path="res://audio/woosh_4.wav" type="AudioStream" id=14]
+[ext_resource path="res://player/random_audio_player.gd" type="Script" id=15]
+[ext_resource path="res://audio/arrow_woosh_1.wav" type="AudioStream" id=16]
+[ext_resource path="res://audio/arrow_attack.wav" type="AudioStream" id=17]
+[ext_resource path="res://audio/arrow_woosh_2.wav" type="AudioStream" id=18]
+[ext_resource path="res://audio/arrow_woosh_4.wav" type="AudioStream" id=19]
+[ext_resource path="res://audio/arrow_woosh_3.wav" type="AudioStream" id=20]
 
 [sub_resource type="ParticlesMaterial" id=1]
 flag_disable_z = true
@@ -68,25 +79,71 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="footsteps" type="Node" parent="."]
+[node name="sounds" type="Node" parent="."]
+
+[node name="footsteps" type="Node" parent="sounds"]
 script = ExtResource( 9 )
 
-[node name="footstep_1" type="AudioStreamPlayer" parent="footsteps"]
+[node name="footstep_1" type="AudioStreamPlayer" parent="sounds/footsteps"]
 stream = ExtResource( 7 )
 volume_db = -25.077
 
-[node name="footstep_2" type="AudioStreamPlayer" parent="footsteps"]
+[node name="footstep_2" type="AudioStreamPlayer" parent="sounds/footsteps"]
 stream = ExtResource( 6 )
 volume_db = -25.077
 
-[node name="footstep_3" type="AudioStreamPlayer" parent="footsteps"]
+[node name="footstep_3" type="AudioStreamPlayer" parent="sounds/footsteps"]
 stream = ExtResource( 5 )
 volume_db = -25.077
 
-[node name="footstep_4" type="AudioStreamPlayer" parent="footsteps"]
+[node name="footstep_4" type="AudioStreamPlayer" parent="sounds/footsteps"]
 stream = ExtResource( 4 )
 volume_db = -25.077
 
-[node name="footstep_5" type="AudioStreamPlayer" parent="footsteps"]
+[node name="footstep_5" type="AudioStreamPlayer" parent="sounds/footsteps"]
 stream = ExtResource( 8 )
 volume_db = -25.077
+
+[node name="wooshes" type="Node" parent="sounds"]
+script = ExtResource( 15 )
+
+[node name="woosh_1" type="AudioStreamPlayer" parent="sounds/wooshes"]
+stream = ExtResource( 11 )
+
+[node name="woosh_2" type="AudioStreamPlayer" parent="sounds/wooshes"]
+stream = ExtResource( 10 )
+
+[node name="woosh_3" type="AudioStreamPlayer" parent="sounds/wooshes"]
+stream = ExtResource( 12 )
+
+[node name="woosh_4" type="AudioStreamPlayer" parent="sounds/wooshes"]
+stream = ExtResource( 14 )
+
+[node name="woosh_5" type="AudioStreamPlayer" parent="sounds/wooshes"]
+stream = ExtResource( 13 )
+
+[node name="arrow_attacks" type="Node" parent="sounds"]
+script = ExtResource( 15 )
+
+[node name="arrow_attack" type="AudioStreamPlayer" parent="sounds/arrow_attacks"]
+stream = ExtResource( 17 )
+volume_db = -14.976
+
+[node name="arrow_wooshes" type="Node" parent="sounds"]
+script = ExtResource( 15 )
+
+[node name="arrow_woosh_1" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
+stream = ExtResource( 16 )
+volume_db = -4.16
+
+[node name="arrow_woosh_2" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
+stream = ExtResource( 18 )
+volume_db = -4.16
+
+[node name="arrow_woosh_3" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
+stream = ExtResource( 20 )
+volume_db = -4.16
+
+[node name="arrow_woosh_4" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
+stream = ExtResource( 19 )
+volume_db = -4.16

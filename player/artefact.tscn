@@ -1,19 +1,19 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://collectables/pine.png" type="Texture" id=1]
+[ext_resource path="res://player/artefakt.png" type="Texture" id=1]
 [ext_resource path="res://shaders/outline.shader" type="Shader" id=2]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 2 )
-shader_param/outline_width = 2.0
+shader_param/outline_width = 4.0
 shader_param/outline_color = null
 shader_param/height = 2
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 31.8716, 31.4894 )
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 43.924, 63.1789 )
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 32.0307, 31.5148 )
+extents = Vector2( 42.4538, 61.7087 )
 
 [node name="Artefact" type="StaticBody2D" groups=[
 "artefact",
@@ -21,13 +21,17 @@ extents = Vector2( 32.0307, 31.5148 )
 position = Vector2( -33.2726, -33.2726 )
 
 [node name="Sprite" type="Sprite" parent="."]
-material = SubResource( 2 )
+material = SubResource( 1 )
+position = Vector2( -11.4576, -40.8124 )
+scale = Vector2( 0.112742, 0.112742 )
 texture = ExtResource( 1 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
+position = Vector2( -11.0264, -32.3441 )
+shape = SubResource( 2 )
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( -11.0264, -30.1388 )
 shape = SubResource( 3 )

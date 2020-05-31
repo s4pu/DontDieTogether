@@ -2,7 +2,7 @@ extends StaticBody2D
 
 signal game_over
 
-var hp = 1
+var hp = 200
 var good_team
 
 # Called when the node enters the scene tree for the first time.
