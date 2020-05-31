@@ -11,11 +11,13 @@ var speed = 200
 var good_team setget set_team
 var inventory = Global.EMPTY_INVENTORY.duplicate()
 
-const charge_back_speed = 150
-const charge_forward_speed = 1500
-const charge_back_duration = 400	# milliseconds
-const charge_forward_duration = 100	# milliseconds
+const charge_back_speed = 200
+const charge_forward_speed = 900
+const charge_back_duration = 350	# milliseconds
+const charge_forward_duration = 250	# milliseconds
 const charging_damage = 50
+
+var last_charge_time = 0
 var charge_start_time
 var charge_direction: Vector2
 var charging_status = 0 	#  0) no charge  1) back   2) forward
@@ -66,6 +68,7 @@ func _process(dt):
 			did_move = true
 			if OS.get_ticks_msec() - charge_start_time > charge_forward_duration + charge_back_duration:
 				charging_status = 0
+				last_charge_time = OS.get_ticks_msec()
 		else:
 			if Input.is_action_pressed("ui_up"):
 	# warning-ignore:return_value_discarded
@@ -91,25 +94,25 @@ func _process(dt):
 				rpc("spawn_tower", position)
 			if Input.is_action_just_pressed("ui_buildSpikes"):
 				rpc("spawn_spikes", position)
-			if Input.is_mouse_button_pressed(BUTTON_LEFT) \
-			  and can_shoot() and behaviour().can_shoot():
-				last_shot_time = OS.get_ticks_msec()
-				var direction = -(position - get_global_mouse_position()).normalized()
-				if behaviour().can_siege():
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and behaviour().can_siege():
+				if OS.get_ticks_msec() - last_charge_time > behaviour().weapon_cooldown():
+					var direction = -(position - get_global_mouse_position()).normalized()
 					charging_status = 1
 					charge_start_time = OS.get_ticks_msec()
 					charge_direction = direction
 					collision = move_and_collide(- direction * charge_back_speed * dt)
 					did_move = true
-				else:
-					rpc("spawn_projectile", position, direction, Uuid.v4())
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_shoot():
+				last_shot_time = OS.get_ticks_msec()
+				var direction = -(position - get_global_mouse_position()).normalized()
+				rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
-			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit() and behaviour().can_melee_fight():
+			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
 				last_hit_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
-			if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
-				if (selected_building.good_team == good_team):
+			if Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building:
+				if selected_building.good_team == good_team:
 					selected_building.destroy()
 					selected_building = null
 			if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
@@ -130,28 +133,29 @@ func _process(dt):
 			$particles_steps.rset('rotation', old_position.angle_to_point(position))
 		$particles_steps.rset('emitting', did_move)
 
-const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
-	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
-
-const MELEE_WEAPON_COOLDOWN = 1000 # milliseconds
-func can_hit():
-	return OS.get_ticks_msec() - last_hit_time > MELEE_WEAPON_COOLDOWN
+	return OS.get_ticks_msec() - last_shot_time > behaviour().weapon_cooldown()
 
 remotesync func drop_manifestation(position):
+	drop_manifestation_internal(position)
+	assume_manifestation("default")
+
+func drop_manifestation_internal(position):
 	var pickup = preload("res://manifestation/manifestation.tscn").instance()
 	pickup.position = position
 	pickup.manifestation_name = current_manifestation
 	pickup.dropped_by = id
 	get_parent().add_child(pickup)
-	
-	assume_manifestation("default")
 
 func set_team(team):
 	good_team = team
 	var color = Color.royalblue if good_team else Color.indianred
 	$sprite.material = $sprite.material.duplicate()
 	$sprite.material.set_shader_param("outline_color", color)
+	
+	var box = StyleBoxFlat.new()
+	box.bg_color = color
+	$Health.add_stylebox_override("fg", box)
 
 remotesync func assume_manifestation(manifestation_name):
 	# TODO: spawn effect showing the change
@@ -277,6 +281,8 @@ remotesync func take_damage(points):
 		die()
 
 func die():
+	drop_manifestation_internal(position)
+	
 	var particles = preload("res://player/Dying_Particle.tscn").instance()
 	particles.position = position
 	particles.get_node("Particles2D").emitting = true
