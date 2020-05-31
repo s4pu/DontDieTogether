@@ -13,6 +13,7 @@ var inventory = Global.EMPTY_INVENTORY.duplicate()
 
 var current_manifestation setget set_manifestation
 var last_shot_time = 0
+var last_hit_time = 0
 remotesync var hitpoints
 remotesync var dead = false
 
@@ -78,6 +79,10 @@ func _process(dt):
 			last_shot_time = OS.get_ticks_msec()
 			var direction = -(position - get_global_mouse_position()).normalized()
 			rpc("spawn_projectile", position, direction, Uuid.v4())
+		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_hit():
+			last_hit_time = OS.get_ticks_msec()
+			var direction = -(position - get_global_mouse_position()).normalized()
+			rpc("hit", position, direction, Uuid.v4())
 		if (Input.is_mouse_button_pressed(BUTTON_RIGHT) && selected_building):
 			if (selected_building.good_team == good_team):
 				selected_building.destroy()
@@ -97,6 +102,10 @@ func _process(dt):
 const WEAPON_COOLDOWN = 400 # milliseconds
 func can_shoot():
 	return OS.get_ticks_msec() - last_shot_time > WEAPON_COOLDOWN
+
+const MELEE_WEAPON_COOLDOWN = 1000 # milliseconds
+func can_hit():
+	return OS.get_ticks_msec() - last_hit_time > MELEE_WEAPON_COOLDOWN
 
 remotesync func drop_manifestation(position):
 	var pickup = preload("res://manifestation/manifestation.tscn").instance()
@@ -137,6 +146,16 @@ remotesync func spawn_projectile(position, direction, name):
 	projectile.good_team = good_team
 	get_parent().add_child(projectile)
 	return projectile
+	
+remotesync func hit(position, direction, name):
+	var weapon = preload("res://melee_weapon/melee_weapon.tscn").instance()
+	weapon.set_network_master(1)
+	weapon.name = name
+	weapon.position = position
+	weapon.owned_by = self
+	weapon.good_team = good_team
+	get_parent().add_child(weapon)
+	#weapon.swing()
 	
 func get_position_on_tilemap(position):
 	var x = position[0]
