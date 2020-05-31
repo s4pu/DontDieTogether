@@ -13,7 +13,6 @@ remotesync func play_random():
 			cam_pos = player.global_position
 			
 	if not success:
-		print(":(")
 		return
 	
 	#var cam_pos = get_viewport().get_camera().get_global_pos()
