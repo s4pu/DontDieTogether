@@ -24,7 +24,6 @@ var charging_status = 0 	#  0) no charge  1) back   2) forward
 
 var current_manifestation setget set_manifestation
 var last_shot_time = 0
-var last_hit_time = 0
 remotesync var hitpoints setget set_hitpoints
 remotesync var dead = false
 
@@ -109,7 +108,7 @@ func _process(dt):
 				rpc("spawn_projectile", position, direction, Uuid.v4())
 				behaviour().after_shoot()
 			if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot() and behaviour().can_melee_fight():
-				last_hit_time = OS.get_ticks_msec()
+				last_shot_time = OS.get_ticks_msec()
 				var direction = -(position - get_global_mouse_position()).normalized()
 				rpc("hit", position, direction, Uuid.v4())
 				$wooshes.play_random()
@@ -245,10 +244,9 @@ func spawn_building(building, position):
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
 		self.position = get_position_after_building(position, building.position)
-		previous_buildings_position = building.position
-		var color = Color.royalblue if building.good_team else Color.indianred
+		previous_buildings_position = building.position 
 		building.get_node("Sprite").material = building.get_node("Sprite").material.duplicate()
-		building.get_node("Sprite").material.set_shader_param("outline_color", color)
+		building.set_color(Color.royalblue if building.good_team else Color.indianred)
 		get_parent().add_child(building)
 		building.connect("select_building", self, "select_building")
 		building.connect("deselect_building", self, "deselect_building")

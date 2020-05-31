@@ -1,11 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://buildings/building.gd" type="Script" id=2]
 [ext_resource path="res://sync/sync.tscn" type="PackedScene" id=3]
 [ext_resource path="res://shaders/outline.shader" type="Shader" id=4]
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 32.6501, 31.8728 )
 
 [sub_resource type="ShaderMaterial" id=2]
@@ -23,7 +23,7 @@ extents = Vector2( 32.8467, 32.2334 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 material = SubResource( 2 )
@@ -37,6 +37,19 @@ shape = SubResource( 3 )
 
 [node name="sync" parent="." instance=ExtResource( 3 )]
 synced_properties = PoolStringArray( "good_team", "hp" )
+
+[node name="Health" type="ProgressBar" parent="."]
+margin_left = -30.4174
+margin_top = -44.4438
+margin_right = 34.5826
+margin_bottom = -38.4438
+custom_styles/fg = SubResource( 5 )
+max_value = 1.0
+value = 1.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="mouse_entered" from="." to="." method="_on_building_mouse_entered"]
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_Area2D_mouse_entered"]
 [connection signal="mouse_exited" from="Area2D" to="." method="_on_Area2D_mouse_exited"]

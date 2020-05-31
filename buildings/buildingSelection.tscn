@@ -22,11 +22,12 @@ scale = Vector2( 0.880537, 0.880537 )
 texture = ExtResource( 1 )
 
 [node name="Label" type="Label" parent="MarginContainer/wall"]
-margin_left = 15.0
-margin_top = 11.0
-margin_right = 26.0
-margin_bottom = 25.0
-text = "1"
+margin_left = 10.3834
+margin_top = 38.5929
+margin_right = 31.3834
+margin_bottom = 53.5929
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "2"
 __meta__ = {
 "_edit_use_anchors_": true
 }
@@ -36,12 +37,11 @@ position = Vector2( -9.08537, 44.2911 )
 texture = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="MarginContainer/wall/Sprite"]
-margin_left = 19.4688
-margin_top = -5.69818
-margin_right = 40.4688
-margin_bottom = 9.30182
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "2"
+margin_left = 24.0854
+margin_top = -33.2911
+margin_right = 35.0854
+margin_bottom = -19.2911
+text = "1"
 __meta__ = {
 "_edit_use_anchors_": true
 }
@@ -62,26 +62,36 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="Sprite2" type="Sprite" parent="MarginContainer/fence"]
-position = Vector2( -6.81404, 44.2911 )
-scale = Vector2( 1, 1 )
-texture = ExtResource( 4 )
-
-[node name="Label" type="Label" parent="MarginContainer/fence/Sprite2"]
-margin_left = 19.4688
-margin_top = -5.69818
-margin_right = 40.4688
-margin_bottom = 9.30182
+[node name="Label" type="Label" parent="MarginContainer/fence"]
+margin_left = 12.6548
+margin_top = 38.5929
+margin_right = 33.6548
+margin_bottom = 53.5929
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "1"
 __meta__ = {
 "_edit_use_anchors_": true
 }
 
+[node name="Sprite2" type="Sprite" parent="MarginContainer/fence"]
+position = Vector2( -6.81404, 44.2911 )
+texture = ExtResource( 4 )
+
 [node name="spikes" type="Sprite" parent="MarginContainer"]
 position = Vector2( 125.864, -4.71778 )
 scale = Vector2( 0.915069, 0.915069 )
 texture = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="MarginContainer/spikes"]
+margin_left = 17.8697
+margin_top = 38.1799
+margin_right = 38.8697
+margin_bottom = 53.1799
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "3"
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="Label3" type="Label" parent="MarginContainer/spikes"]
 margin_left = 15.0
@@ -98,17 +108,6 @@ position = Vector2( -0.864349, 43.663 )
 scale = Vector2( 0.962262, 0.962262 )
 texture = ExtResource( 4 )
 
-[node name="Label" type="Label" parent="MarginContainer/spikes/Sprite4"]
-margin_left = 19.4688
-margin_top = -5.69818
-margin_right = 40.4688
-margin_bottom = 9.30182
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "3"
-__meta__ = {
-"_edit_use_anchors_": true
-}
-
 [node name="tower" type="Sprite" parent="MarginContainer"]
 position = Vector2( 194.638, -4.36241 )
 scale = Vector2( 0.773989, 0.773989 )
@@ -124,12 +123,12 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="Sprite5" type="Sprite" parent="MarginContainer/tower"]
+[node name="wood" type="Sprite" parent="MarginContainer/tower"]
 position = Vector2( -7.18929, 73.1268 )
 scale = Vector2( 1.13766, 1.13766 )
 texture = ExtResource( 4 )
 
-[node name="Label" type="Label" parent="MarginContainer/tower/Sprite5"]
+[node name="Label" type="Label" parent="MarginContainer/tower/wood"]
 margin_left = 19.4688
 margin_top = -5.69818
 margin_right = 40.4688
@@ -140,12 +139,12 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="Sprite3" type="Sprite" parent="MarginContainer/tower"]
+[node name="stone" type="Sprite" parent="MarginContainer/tower"]
 position = Vector2( -6.97771, 51.1626 )
 scale = Vector2( 1.13766, 1.13766 )
 texture = ExtResource( 6 )
 
-[node name="Label" type="Label" parent="MarginContainer/tower/Sprite3"]
+[node name="Label" type="Label" parent="MarginContainer/tower/stone"]
 margin_left = 18.5191
 margin_top = -6.17302
 margin_right = 39.5191
