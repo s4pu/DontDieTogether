@@ -1,24 +1,32 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
-[sub_resource type="ParticlesMaterial" id=1]
+[sub_resource type="Gradient" id=1]
+colors = PoolColorArray( 0.1875, 0.1875, 0.1875, 1, 0.675781, 0.659943, 0.659943, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
 flag_disable_z = true
 spread = 180.0
 gravity = Vector3( 0, 0, 0 )
 initial_velocity = 103.45
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
-scale = 6.0
+scale = 4.0
 scale_random = 1.0
+color_ramp = SubResource( 2 )
 
 [node name="Collision_Particle" type="Node2D"]
 
 [node name="Particles2D" type="Particles2D" parent="."]
 position = Vector2( 0, -1 )
+scale = Vector2( 2, 2 )
 emitting = false
 amount = 30
 lifetime = 0.2
 one_shot = true
-process_material = SubResource( 1 )
+process_material = SubResource( 3 )
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.3
