@@ -115,7 +115,7 @@ func _process(dt):
 					selected_building.destroy()
 					selected_building = null
 			if Input.is_action_just_pressed("ui_changeteam"): # for debugging purpose
-				good_team = not good_team
+				set_team(not good_team)
 			if Input.is_action_just_pressed("free_manifestation"):
 				rpc("drop_manifestation", position)
 		
@@ -171,10 +171,19 @@ func set_manifestation(name):
 	set_hitpoints(ceil(manifestation["hitpoints"] * health_percentage))
 	speed = manifestation["speed"]
 	current_manifestation = name
-	get_player_inventory().set_visibility(behaviour().can_collect())
-	get_base_inventory().set_visibility(behaviour().can_build())
+	#get_player_inventory().set_visibility(behaviour().can_collect())
+	#get_base_inventory().set_visibility(behaviour().can_build())
+	set_inventory_visibility()
 	
 	emit_signal("manifestation_changed", name)
+
+func set_inventory_visibility():
+	var collector = behaviour().can_collect()
+	var builder = behaviour().can_build()
+	var healer = behaviour().can_heal()
+	var cook = behaviour().can_cook()
+	get_player_inventory().set_visibility(collector, collector, collector)
+	get_base_inventory().set_visibility(builder, healer, cook)
 
 func get_player_inventory():
 	return $"../../../../../Player_Inventory"

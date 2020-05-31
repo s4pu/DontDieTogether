@@ -1,6 +1,8 @@
 extends StaticBody2D
 
-var hp = 100
+signal game_over
+
+var hp = 1
 var good_team
 
 # Called when the node enters the scene tree for the first time.
@@ -9,6 +11,7 @@ func _ready():
 
 func destroy():
 	queue_free()
+	emit_signal("game_over")
 
 remotesync func take_damage(damage):
 	hp -= damage
