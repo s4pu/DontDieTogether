@@ -173,4 +173,4 @@ func update_team_comp(m):
 	$team_composition_evil.update_player_list(false)
 
 remotesync func unregister_player(player_id: int):
-	remove_child(get_node(String(player_id)))
+	$color_tint_container/viewport/shadow_casters_container/viewport.remove_child($color_tint_container/viewport/shadow_casters_container/viewport.get_node(String(player_id)))

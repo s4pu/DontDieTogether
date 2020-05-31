@@ -48,9 +48,6 @@ func _on_Area2D_mouse_exited():
 	
 func set_hitpoints(num):
 	var norm_hp = float(num) / max_hp
-	print(norm_hp)
-	print(num)
-	print(max_hp)
 	if norm_hp == 1:
 		$Health.visible = false
 	else:
