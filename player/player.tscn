@@ -127,18 +127,23 @@ script = ExtResource( 15 )
 
 [node name="arrow_attack" type="AudioStreamPlayer" parent="sounds/arrow_attacks"]
 stream = ExtResource( 17 )
+volume_db = -14.976
 
 [node name="arrow_wooshes" type="Node" parent="sounds"]
 script = ExtResource( 15 )
 
 [node name="arrow_woosh_1" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
 stream = ExtResource( 16 )
+volume_db = -4.16
 
 [node name="arrow_woosh_2" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
 stream = ExtResource( 18 )
+volume_db = -4.16
 
 [node name="arrow_woosh_3" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
 stream = ExtResource( 20 )
+volume_db = -4.16
 
 [node name="arrow_woosh_4" type="AudioStreamPlayer" parent="sounds/arrow_wooshes"]
 stream = ExtResource( 19 )
+volume_db = -4.16
