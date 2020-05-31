@@ -5,8 +5,8 @@ extends "res://buildings/building.gd"
 # var a = 2
 # var b = "text"
 const fence_hp = 40
-const fence_costs = 1
-const fence_material = "wood"
+const fence_costs = [1]
+const fence_material = ["wood"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

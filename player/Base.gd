@@ -11,7 +11,7 @@ func _on_Base_body_entered(body):
 	if body.is_in_group("players") && \
 		  body.is_network_master() && \
 		  body.good_team == good_team:
-		unload_inventary(body.inventary)
+		unload_inventary(body.inventory)
 		body.clear_inventory()
 		
 func unload_inventary(player_inventary):

@@ -7,7 +7,7 @@ var id
 var selected_building
 const speed = 200
 var good_team setget set_team
-var inventary = Global.EMPTY_INVENTORY.duplicate()
+var inventory = Global.EMPTY_INVENTORY.duplicate()
 
 remotesync var dead = false
 
@@ -67,6 +67,9 @@ func _process(dt):
 			rpc("spawn_wall", position)
 		if Input.is_action_just_pressed("ui_buildFence"):
 			rpc("spawn_fence", position)
+		if Input.is_action_just_pressed("ui_buildTower"):
+			print("test")
+			rpc("spawn_tower", position)
 		if Input.is_mouse_button_pressed(BUTTON_LEFT) and can_shoot():
 			last_shot_time = OS.get_ticks_msec()
 			var direction = -(position - get_global_mouse_position()).normalized()
@@ -117,8 +120,8 @@ func get_position_on_tilemap(position):
 
 func spawn_building(building, position):
 	building._ready()
-	if inventary.has(building.needed_material) && inventary[building.needed_material] >= building.costs:
-		decrease_inventary(building.needed_material, building.costs)
+	if inventory_has_needed_materials(building.needed_material, building.costs):
+		decrease_inventory(building.needed_material, building.costs)
 		building.good_team = good_team
 		building.position = get_position_on_tilemap(position)
 		get_parent().add_child(building)
@@ -132,7 +135,10 @@ remotesync func spawn_wall(position):
 remotesync func spawn_fence(position):
 	var building = preload("res://buildings/fence.tscn").instance()
 	spawn_building(building, position)
-
+	
+remotesync func spawn_tower(position):
+	var building = preload("res://buildings/tower.tscn").instance()
+	spawn_building(building, position)
 
 remotesync func take_damage(points):
 	hitpoints -= points
@@ -149,20 +155,31 @@ func deselect_building():
 	selected_building = null
 
 func collect(collectable):
-	if not inventary.has(collectable.item_name):
-		inventary[collectable.item_name] = 1
+	if not inventory.has(collectable.item_name):
+		inventory[collectable.item_name] = 1
 	else:
-		inventary[collectable.item_name] += 1
-	update_inventary()
+		inventory[collectable.item_name] += 1
+	update_inventory()
 
-func update_inventary():
+func update_inventory():
 	if is_network_master():
-		$"../../../Inventary".update_inventary(inventary)
+		$"../../../Inventary".update_inventary(inventory)
 
 func clear_inventory():
-	inventary = Global.EMPTY_INVENTORY.duplicate()
-	update_inventary()
+	inventory = Global.EMPTY_INVENTORY.duplicate()
+	update_inventory()
 
-func decrease_inventary(material, costs):
-	inventary[material] = inventary[material] - costs
-	update_inventary()
+func decrease_inventory(materials, costs):
+	for i in range(len(materials)):
+		inventory[materials[i]] = inventory[materials[i]] - costs[i]
+	update_inventory()
+	
+func inventory_has_needed_materials(materials, costs):
+	var has_enough_material = false
+	for i in range(len(materials)):
+		if inventory.has(materials[i]):
+			if inventory[materials[i]] >= costs[i]:
+				has_enough_material = true
+			else:
+				has_enough_material = false
+	return has_enough_material
