@@ -184,7 +184,10 @@ remotesync func spawn_spikes(position):
 
 remotesync func take_damage(points):
 	hitpoints -= points
-	emit_signal("health_changed", hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"])
+	var percentage = hitpoints / Global.ANIMALS[current_manifestation]["hitpoints"]
+	emit_signal("health_changed", percentage)
+	
+	$Health.value = percentage
 	
 	if hitpoints <= 0:
 		die()
@@ -194,6 +197,7 @@ func die():
 	dead = true
 	position = Vector2(-8000, -8000)
 	hitpoints = null
+	$Health.value = 1
 	assume_manifestation("default")
 	if is_network_master():
 		yield(get_tree().create_timer(6), "timeout")
