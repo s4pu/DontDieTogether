@@ -1,9 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://player/artefakt.png" type="Texture" id=1]
 [ext_resource path="res://shaders/outline.shader" type="Shader" id=2]
 [ext_resource path="res://buildings/building_impact_sounds.tscn" type="PackedScene" id=3]
-[ext_resource path="res://player/random_audio_player.gd" type="Script" id=4]
+[ext_resource path="res://sync/sync.tscn" type="PackedScene" id=4]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 2 )
@@ -16,6 +16,9 @@ extents = Vector2( 43.924, 63.1789 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 42.4538, 61.7087 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 1, 0, 0, 1 )
 
 [node name="Artefact" type="StaticBody2D" groups=[
 "artefact",
@@ -38,5 +41,20 @@ shape = SubResource( 2 )
 position = Vector2( -11.0264, -30.1388 )
 shape = SubResource( 3 )
 
-[node name="impact_sounds" type="Node2D" parent="." instance=ExtResource( 3 )]
-script = ExtResource( 4 )
+[node name="impact_sounds" parent="." instance=ExtResource( 3 )]
+
+[node name="Health" type="ProgressBar" parent="."]
+margin_left = -53.7367
+margin_top = -119.916
+margin_right = 30.2633
+margin_bottom = -113.916
+custom_styles/fg = SubResource( 4 )
+max_value = 1.0
+value = 1.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sync" parent="." instance=ExtResource( 4 )]
+synced_properties = PoolStringArray( "hp" )
