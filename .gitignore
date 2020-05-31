@@ -10,5 +10,4 @@ export_presets.cfg
 .mono/
 data_*/
 
-audio/*.ogg
-audio/*.wav
+audio/
